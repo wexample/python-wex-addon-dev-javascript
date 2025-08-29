@@ -4,5 +4,6 @@ from wexample_wex_core.workdir.code_base_workdir import CodeBaseWorkdir
 
 
 class JavascriptWorkdir(CodeBaseWorkdir):
-    """Base workdir for JavaScript projects (stub)."""
-    pass
+    def get_dependencies(self) -> list[str]:
+        # TODO search in package.json
+        return []
