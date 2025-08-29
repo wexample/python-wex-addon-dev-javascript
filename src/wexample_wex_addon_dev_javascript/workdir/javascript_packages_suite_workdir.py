@@ -8,6 +8,7 @@ from wexample_wex_core.workdir.framework_packages_suite_workdir import (
 
 if TYPE_CHECKING:
     from pathlib import Path
+
     from wexample_wex_core.workdir.code_base_workdir import CodeBaseWorkdir
 
 
