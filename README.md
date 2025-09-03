@@ -2,7 +2,7 @@
 
 Python dev addon for wex
 
-Version: 0.0.40
+Version: 0.0.41
 
 ## Requirements
 
@@ -11,7 +11,7 @@ Version: 0.0.40
 ## Dependencies
 
 - pydantic>=2,<3
-- wexample-wex-core==6.0.43
+- wexample-wex-core==6.0.44
 
 ## Installation
 
