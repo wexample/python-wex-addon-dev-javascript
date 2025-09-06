@@ -1,9 +1,10 @@
 from __future__ import annotations
-
-from wexample_config.const.types import DictConfig
 from wexample_wex_addon_dev_javascript.workdir.javascript_workdir import (
     JavascriptWorkdir,
 )
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from wexample_config.const.types import DictConfig
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
