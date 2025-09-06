@@ -14,7 +14,9 @@ if TYPE_CHECKING:
 
 class JavascriptPackagesSuiteWorkdir(FrameworkPackageSuiteWorkdir):
     def _get_children_package_workdir_class(self) -> type[CodeBaseWorkdir]:
-        from wexample_wex_addon_dev_javascript.workdir.javascript_package_workdir import JavascriptPackageWorkdir
+        from wexample_wex_addon_dev_javascript.workdir.javascript_package_workdir import (
+            JavascriptPackageWorkdir,
+        )
 
         return JavascriptPackageWorkdir
 
