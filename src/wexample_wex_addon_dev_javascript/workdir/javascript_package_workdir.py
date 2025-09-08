@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
     def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
-
         raw_value = super().prepare_value(raw_value=raw_value)
 
         return raw_value
