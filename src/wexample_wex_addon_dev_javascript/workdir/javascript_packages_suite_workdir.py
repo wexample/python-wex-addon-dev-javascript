@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 
 
 class JavascriptPackagesSuiteWorkdir(FrameworkPackageSuiteWorkdir):
-
     def _child_is_package_directory(self, entry: Path) -> bool:
         return entry.is_dir() and (entry / "package.json").is_file()
 
