@@ -19,6 +19,7 @@ class JavascriptPackagesSuiteWorkdir(FrameworkPackageSuiteWorkdir):
 
     def _get_children_package_directory_name(self) -> str:
         return "npm"
+
     def _get_children_package_workdir_class(self) -> type[CodeBaseWorkdir]:
         from wexample_wex_addon_dev_javascript.workdir.javascript_package_workdir import (
             JavascriptPackageWorkdir,
