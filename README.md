@@ -2,7 +2,7 @@
 
 Python dev addon for wex
 
-Version: 0.0.42
+Version: 0.0.43
 
 ## Requirements
 
@@ -12,7 +12,7 @@ Version: 0.0.42
 
 - attrs>=23.1.0
 - cattrs>=23.1.0
-- wexample-wex-core==6.0.45
+- wexample-wex-core==6.0.46
 
 ## Installation
 
