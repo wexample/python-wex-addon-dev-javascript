@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from wexample_wex_core.workdir.framework_packages_suite_workdir import (
+from wexample_wex_addon_app.workdir.framework_packages_suite_workdir import (
     FrameworkPackageSuiteWorkdir,
 )
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from wexample_wex_core.workdir.code_base_workdir import CodeBaseWorkdir
+    from wexample_wex_addon_app.workdir.code_base_workdir import CodeBaseWorkdir
 
 
 class JavascriptPackagesSuiteWorkdir(FrameworkPackageSuiteWorkdir):
