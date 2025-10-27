@@ -18,6 +18,7 @@ classifiers = [
 dependencies = [
     "attrs>=23.1.0",
     "cattrs>=23.1.0",
+    "wexample-wex-addon-app==0.0.46",
     "wexample-wex-core==6.0.48",
 ]
 
