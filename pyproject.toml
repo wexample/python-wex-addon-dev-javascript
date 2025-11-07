@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "wexample-wex-addon-dev-javascript"
-version = "0.0.49"
+version = "0.0.53"
 description = "Python dev addon for wex"
 authors = [{name = "weeger", email = "contact@wexample.com"}]
 requires-python = ">=3.10"
@@ -12,8 +12,8 @@ classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :
 dependencies = [
     "attrs>=23.1.0",
     "cattrs>=23.1.0",
-    "wexample-wex-addon-app==0.0.49",
-    "wexample-wex-core==6.0.55",
+    "wexample-wex-addon-app==0.0.51",
+    "wexample-wex-core==6.0.63",
 ]
 
 [project.readme]
@@ -32,6 +32,10 @@ dev = [
     "pytest-cov",
 ]
 
+[tool.setuptools.packages.find]
+include = ["*"]
+exclude = ["wexample_wex_addon_dev_javascript.testing*"]
+
 [tool.pdm]
 distribution = true
 
@@ -41,6 +45,14 @@ package-dir = "src"
 [[tool.pdm.build.packages]]
 include = "wexample_wex_addon_dev_javascript"
 from = "src"
-[tool.setuptools.packages.find]
-include = ["*"]
-exclude = ["wexample_wex_addon_dev_javascript.testing*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.coverage.run]
+source = ["wexample_wex_addon_dev_javascript"]
+omit = ["*/tests/*", "*/.venv/*", "*/venv/*"]
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "def __repr__", "raise AssertionError", "raise NotImplementedError", "if __name__ == .__main__.:", "if TYPE_CHECKING:", "@abstractmethod"]
