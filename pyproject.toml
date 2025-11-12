@@ -12,8 +12,8 @@ classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :
 dependencies = [
     "attrs>=23.1.0",
     "cattrs>=23.1.0",
-    "wexample-wex-addon-app==0.0.51",
-    "wexample-wex-core==6.0.63",
+    "wexample-wex-addon-app==0.0.52",
+    "wexample-wex-core==6.0.64",
 ]
 
 [project.readme]
