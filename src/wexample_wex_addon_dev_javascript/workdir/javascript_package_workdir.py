@@ -7,11 +7,14 @@ from wexample_wex_addon_dev_javascript.workdir.javascript_workdir import (
 )
 
 if TYPE_CHECKING:
-    from wexample_config.const.types import DictConfig
+    from wexample_wex_addon_app.workdir.framework_packages_suite_workdir import FrameworkPackageSuiteWorkdir
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
-    def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
-        raw_value = super().prepare_value(raw_value=raw_value)
+    def _get_suite_package_workdir_class(self) -> type[FrameworkPackageSuiteWorkdir]:
+        from wexample_wex_addon_dev_javascript.workdir.javascript_packages_suite_workdir import (
+            JavascriptPackagesSuiteWorkdir,
+        )
 
-        return raw_value
+        return JavascriptPackagesSuiteWorkdir
+
