@@ -7,7 +7,9 @@ from wexample_wex_addon_dev_javascript.workdir.javascript_workdir import (
 )
 
 if TYPE_CHECKING:
-    from wexample_wex_addon_app.workdir.framework_packages_suite_workdir import FrameworkPackageSuiteWorkdir
+    from wexample_wex_addon_app.workdir.framework_packages_suite_workdir import (
+        FrameworkPackageSuiteWorkdir,
+    )
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
@@ -17,4 +19,3 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         )
 
         return JavascriptPackagesSuiteWorkdir
-
