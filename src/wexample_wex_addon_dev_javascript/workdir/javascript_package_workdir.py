@@ -4,6 +4,7 @@ import os
 import subprocess
 from typing import TYPE_CHECKING
 
+from wexample_helpers.helpers.string import string_to_kebab_case
 from wexample_wex_addon_dev_javascript.workdir.javascript_workdir import (
     JavascriptWorkdir,
 )
@@ -31,6 +32,10 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         )
 
         return JavascriptPackagesSuiteWorkdir
+
+    def get_package_import_name(self) -> str:
+        """Get the full package import name with vendor prefix."""
+        return f"@{self.get_vendor_name()}/{string_to_kebab_case(self.get_project_name())}"
 
     def _publish(self, force: bool = False) -> None:
         """Publish the package to npm, skipping if the version already exists."""

@@ -23,7 +23,13 @@ class JavascriptPackageJsonFile(JsonFile):
 
         package = self.find_package_workdir()
         if package:
+            if not content.get("name"):
+                content["name"] = package.get_package_import_name()
+
             content["version"] = package.get_project_version()
+
+        if not content.get("type"):
+            content["type"] = "module"
 
         return json.dumps(content or {}, ensure_ascii=False, indent=2)
 
