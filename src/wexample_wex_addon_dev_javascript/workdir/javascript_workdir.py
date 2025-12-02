@@ -83,6 +83,27 @@ class JavascriptWorkdir(CodeBaseWorkdir):
             ]
         )
 
+        children.extend(
+            [
+                {
+                    "name": "tests",
+                    "type": DiskItemType.DIRECTORY,
+                    "should_exist": True,
+                    "children": [
+                        self._create_javascript_file_children_filter(),
+                    ],
+                },
+                {
+                    "name": "src",
+                    "type": DiskItemType.DIRECTORY,
+                    "should_exist": True,
+                    "children": [
+                        self._create_javascript_file_children_filter(),
+                    ],
+                },
+            ]
+        )
+
         return raw_value
 
     def _create_javascript_file_children_filter(self) -> ChildrenFileFactoryOption:
@@ -91,15 +112,17 @@ class JavascriptWorkdir(CodeBaseWorkdir):
         from wexample_filestate.option.children_filter_option import (
             ChildrenFilterOption,
         )
+        from wexample_filestate_javascript.file.javascript_file import JavascriptFile
 
         # Using a generic pattern since there's no specific JavascriptFile class yet
         return ChildrenFilterOption(
             pattern={
-                "name_pattern": r"^.*\.(js|jsx|ts|tsx)$",
+                "class": JavascriptFile,
                 "type": DiskItemType.FILE,
                 "javascript": [
                     BiomeOption.get_name()
                 ],
             },
+            name_pattern=r"^.*\.(js|jsx|ts|tsx)$",
             recursive=True,
         )
