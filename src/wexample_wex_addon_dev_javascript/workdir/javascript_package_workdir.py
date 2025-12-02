@@ -38,9 +38,9 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
 
         package_name = self.get_package_name()
         version = self.get_project_version()
-        registry = (
-            self.get_env_parameter_or_suite_fallback("NPM_REGISTRY")
-            or "https://registry.npmjs.org"
+        registry = self.get_env_parameter_or_suite_fallback(
+            key="NPM_REGISTRY",
+            default="https://registry.npmjs.org"
         )
 
         # Detect if the version already exists on the registry
