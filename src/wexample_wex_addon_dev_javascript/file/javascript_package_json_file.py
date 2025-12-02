@@ -14,7 +14,11 @@ class JavascriptPackageJsonFile(JsonFile):
     def get_dependencies_versions(
         self, optional: bool = False, group: str = "dev"
     ) -> dict[str, str]:
-        return self.read_config().search(path="dependencies").get_dict_or_default(default={})
+        return (
+            self.read_config()
+            .search(path="dependencies")
+            .get_dict_or_default(default={})
+        )
 
     def dumps(self, content: dict | None = None) -> str:
         import json

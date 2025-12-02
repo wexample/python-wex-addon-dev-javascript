@@ -35,7 +35,9 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
 
     def get_package_import_name(self) -> str:
         """Get the full package import name with vendor prefix."""
-        return f"@{self.get_vendor_name()}/{string_to_kebab_case(self.get_project_name())}"
+        return (
+            f"@{self.get_vendor_name()}/{string_to_kebab_case(self.get_project_name())}"
+        )
 
     def _publish(self, force: bool = False) -> None:
         """Publish the package to npm, skipping if the version already exists."""
@@ -44,8 +46,7 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         package_name = self.get_package_name()
         version = self.get_project_version()
         registry = self.get_env_parameter_or_suite_fallback(
-            key="NPM_REGISTRY",
-            default="https://registry.npmjs.org"
+            key="NPM_REGISTRY", default="https://registry.npmjs.org"
         )
 
         # Detect if the version already exists on the registry
