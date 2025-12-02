@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from wexample_config.options_provider.abstract_options_provider import AbstractOptionsProvider
 from wexample_wex_addon_app.workdir.code_base_workdir import CodeBaseWorkdir
 
 if TYPE_CHECKING:
@@ -31,6 +32,21 @@ class JavascriptWorkdir(CodeBaseWorkdir):
 
     def get_main_code_file_extension(self) -> str:
         return "js"
+
+    def get_options_providers(self) -> list[type[AbstractOptionsProvider]]:
+        from wexample_filestate_javascript.options_provider.javascript_options_provider import (
+            JavascriptOptionsProvider,
+        )
+
+        options = super().get_options_providers()
+
+        options.extend(
+            [
+                JavascriptOptionsProvider,
+            ]
+        )
+
+        return options
 
     def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
         from wexample_filestate.const.disk import DiskItemType
@@ -71,6 +87,7 @@ class JavascriptWorkdir(CodeBaseWorkdir):
 
     def _create_javascript_file_children_filter(self) -> ChildrenFileFactoryOption:
         from wexample_filestate.const.disk import DiskItemType
+        from wexample_filestate_javascript.option.javascript.biome_option import BiomeOption
         from wexample_filestate.option.children_filter_option import (
             ChildrenFilterOption,
         )
@@ -80,6 +97,9 @@ class JavascriptWorkdir(CodeBaseWorkdir):
             pattern={
                 "name_pattern": r"^.*\.(js|jsx|ts|tsx)$",
                 "type": DiskItemType.FILE,
+                "javascript": [
+                    BiomeOption.get_name()
+                ],
             },
             recursive=True,
         )
