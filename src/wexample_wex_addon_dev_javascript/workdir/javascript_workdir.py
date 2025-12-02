@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from wexample_config.options_provider.abstract_options_provider import AbstractOptionsProvider
+from wexample_config.options_provider.abstract_options_provider import (
+    AbstractOptionsProvider,
+)
 from wexample_wex_addon_app.workdir.code_base_workdir import CodeBaseWorkdir
 
 if TYPE_CHECKING:
@@ -108,20 +110,20 @@ class JavascriptWorkdir(CodeBaseWorkdir):
 
     def _create_javascript_file_children_filter(self) -> ChildrenFileFactoryOption:
         from wexample_filestate.const.disk import DiskItemType
-        from wexample_filestate_javascript.option.javascript.biome_option import BiomeOption
         from wexample_filestate.option.children_filter_option import (
             ChildrenFilterOption,
         )
         from wexample_filestate_javascript.file.javascript_file import JavascriptFile
+        from wexample_filestate_javascript.option.javascript.biome_option import (
+            BiomeOption,
+        )
 
         # Using a generic pattern since there's no specific JavascriptFile class yet
         return ChildrenFilterOption(
             pattern={
                 "class": JavascriptFile,
                 "type": DiskItemType.FILE,
-                "javascript": [
-                    BiomeOption.get_name()
-                ],
+                "javascript": [BiomeOption.get_name()],
             },
             name_pattern=r"^.*\.(js|jsx|ts|tsx)$",
             recursive=True,
