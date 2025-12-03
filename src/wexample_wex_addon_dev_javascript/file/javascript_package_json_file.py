@@ -1,18 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from wexample_filestate.item.file.json_file import JsonFile
 from wexample_helpers.decorator.base_class import base_class
-
-if TYPE_CHECKING:
-    from wexample_wex_addon_app.workdir.code_base_workdir import CodeBaseWorkdir
 
 
 @base_class
 class JavascriptPackageJsonFile(JsonFile):
     def get_dependencies_versions(
-        self, optional: bool = False, group: str = "dev"
+            self, optional: bool = False, group: str = "dev"
     ) -> dict[str, str]:
         return (
             self.read_config()
@@ -25,19 +20,11 @@ class JavascriptPackageJsonFile(JsonFile):
 
         content = content or self.read_parsed()
 
-        package = self.find_package_workdir()
-        if package:
-            if not content.get("name"):
-                content["name"] = package.get_package_import_name()
-
-            content["version"] = package.get_project_version()
+        workdir = self.get_parent_item()
+        content["name"] = workdir.get_package_import_name()
+        content["version"] = workdir.get_project_version()
 
         if not content.get("type"):
             content["type"] = "module"
 
         return json.dumps(content or {}, ensure_ascii=False, indent=2)
-
-    def find_package_workdir(self) -> CodeBaseWorkdir | None:
-        from wexample_wex_addon_app.workdir.code_base_workdir import CodeBaseWorkdir
-
-        return self.find_closest(CodeBaseWorkdir)
