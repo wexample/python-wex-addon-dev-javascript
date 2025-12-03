@@ -16,8 +16,6 @@ class JavascriptPackageJsonFile(JsonFile):
         )
 
     def dumps(self, content: dict | None = None) -> str:
-        import json
-
         content = content or self.read_parsed()
 
         workdir = self.get_parent_item()
@@ -27,4 +25,4 @@ class JavascriptPackageJsonFile(JsonFile):
         if not content.get("type"):
             content["type"] = "module"
 
-        return json.dumps(content or {}, ensure_ascii=False, indent=2)
+        return super().dumps(content or {})
