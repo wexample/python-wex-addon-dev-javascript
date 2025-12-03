@@ -1,6 +1,6 @@
 # wexample-wex-addon-dev-javascript
 
-Version: 0.0.56
+Version: 0.0.57
 
 Python dev addon for wex
 
@@ -190,7 +190,7 @@ Free to use in both personal and commercial projects.
 
 ## Integration in the Suite
 
-This package is part of the **Wexample Suite** — a collection of high-quality Python packages designed to work seamlessly together.
+This package is part of the Wexample Suite — a collection of high-quality, modular tools designed to work seamlessly together across multiple languages and environments.
 
 ### Related Packages
 
@@ -208,9 +208,9 @@ Refer to each package's documentation for specific version compatibility require
 
 - attrs: >=23.1.0
 - cattrs: >=23.1.0
-- wexample-filestate-javascript: ==0.0.13
-- wexample-wex-addon-app: ==0.0.54
-- wexample-wex-core: ==6.0.66
+- wexample-filestate-javascript: ==0.0.14
+- wexample-wex-addon-app: ==0.0.55
+- wexample-wex-core: ==6.0.67
 
 
 # About us
