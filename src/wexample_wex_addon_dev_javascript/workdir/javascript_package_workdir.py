@@ -20,6 +20,9 @@ if TYPE_CHECKING:
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
+    def get_package_dependency_name(self) -> str:
+        return self.get_package_import_name()
+
     def get_package_import_name(self) -> str:
         """Get the full package import name with vendor prefix."""
         return (
@@ -75,14 +78,14 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
             )
             return
 
-        token = self.get_env_parameter_or_suite_fallback("NPM_TOKEN")
+        token = self.get_runtime_config().search('npm.api_token').get_str_or_none()
         env = os.environ.copy()
         host = registry.rstrip("/").split("://")[-1]
 
         if registry:
             env["npm_config_registry"] = registry
         if token:
-            env["NPM_TOKEN"] = token
+            env["PACKAGE_PUBLICATION_NPM_TOKEN"] = token
             env[f"npm_config_//{host}/:_authToken"] = token
 
         shell_run(
