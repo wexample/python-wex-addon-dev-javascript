@@ -14,7 +14,6 @@ dependencies = [
     "cattrs>=23.1.0",
     "wexample-filestate-javascript==0.0.14",
     "wexample-wex-addon-app==0.0.55",
-    "wexample-wex-core==6.0.67",
 ]
 
 [project.readme]
