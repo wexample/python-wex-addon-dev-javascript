@@ -46,7 +46,7 @@ class JavascriptPackageJsonFile(JsonFile):
         content = content or self.read_parsed()
 
         workdir = self.get_parent_item()
-        content["name"] = workdir.get_package_import_name()
+        content["name"] = workdir.get_project_name()
         content["version"] = workdir.get_project_version()
 
         if not content.get("type"):

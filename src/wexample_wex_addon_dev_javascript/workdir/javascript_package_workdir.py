@@ -20,14 +20,15 @@ if TYPE_CHECKING:
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
+    def get_project_name(self) -> str:
+        return  f"@{self.get_vendor_name()}/{string_to_kebab_case(super().get_project_name())}"
+
     def get_package_dependency_name(self) -> str:
         return self.get_package_import_name()
 
     def get_package_import_name(self) -> str:
         """Get the full package import name with vendor prefix."""
-        return (
-            f"@{self.get_vendor_name()}/{string_to_kebab_case(self.get_project_name())}"
-        )
+        return self.get_project_name()
 
     def _get_readme_content(self) -> ReadmeContentConfigValue | None:
         from wexample_wex_addon_dev_javascript.config_value.javascript_package_readme_config_value import (
