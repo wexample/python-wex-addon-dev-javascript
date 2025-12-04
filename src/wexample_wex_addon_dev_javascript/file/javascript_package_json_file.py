@@ -1,27 +1,22 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from wexample_filestate.item.file.json_file import JsonFile
 from wexample_helpers.decorator.base_class import base_class
-
-if TYPE_CHECKING:
-    from wexample_wex_addon_app.workdir.code_base_workdir import CodeBaseWorkdir
 
 
 @base_class
 class JavascriptPackageJsonFile(JsonFile):
-    def add_dependency(
+    def add_dependency_from_string(
             self,
-            package: CodeBaseWorkdir,
+            package_name: str,
             version: str,
             operator: str = "",
             optional: bool = False,
             group: None | str = None,
     ) -> bool:
         """
-        Add or update an npm dependency entry (dependencies, devDependencies, etc.).
-        Returns True if the dependency list changed.
+        Add or update an npm dependency entry from a raw package name + version string.
+        Equivalent to add_dependency() but without requiring a CodeBaseWorkdir.
         """
         if optional:
             section = "optionalDependencies"
@@ -38,7 +33,6 @@ class JavascriptPackageJsonFile(JsonFile):
         deps_node = config.search(path=section, default={})
         deps = deps_node.to_dict() if deps_node else {}
 
-        package_name = package.get_package_dependency_name()
         if deps.get(package_name) == constraint:
             return False
 
