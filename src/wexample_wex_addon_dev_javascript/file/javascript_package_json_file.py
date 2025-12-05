@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from wexample_filestate.item.file.json_file import JsonFile
 from wexample_helpers.decorator.base_class import base_class
+from wexample_wex_addon_app.item.file.mixin.app_dependencies_config_file_mixin import AppDependenciesConfigFileMixin
 
 
 @base_class
-class JavascriptPackageJsonFile(JsonFile):
+class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
     def add_dependency_from_string(
             self,
             package_name: str,
