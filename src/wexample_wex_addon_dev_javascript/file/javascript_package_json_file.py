@@ -50,9 +50,6 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
         content["name"] = workdir.get_project_name()
         content["version"] = workdir.get_project_version()
 
-        if not content.get("type"):
-            content["type"] = "module"
-
         return super().dumps(content or {})
 
     def get_dependencies_versions(
