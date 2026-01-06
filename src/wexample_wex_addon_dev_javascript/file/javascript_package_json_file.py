@@ -50,6 +50,10 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
         content["name"] = workdir.get_project_name()
         content["version"] = workdir.get_project_version()
 
+        remote_url = workdir.get_public_remote_repository_url()
+        if remote_url:
+            content["repository"] = remote_url
+
         return super().dumps(content or {})
 
     def get_dependencies_versions(
