@@ -104,6 +104,26 @@ class JavascriptWorkdir(CodeBaseWorkdir):
                     self._create_javascript_file_children_filter(),
                 ],
             },
+            {
+                "name": ".github",
+                "type": DiskItemType.DIRECTORY,
+                "should_exist": True,
+                "children": [
+                    {
+                        "name": "workflows",
+                        "type": DiskItemType.DIRECTORY,
+                        "should_exist": True,
+                        "children": [
+                            {
+                                "name": "publish.yml",
+                                "type": DiskItemType.FILE,
+                                "should_exist": True,
+                                "content": "name: Publish to npm"
+                            }
+                        ]
+                    }
+                ],
+            }
         ])
 
         return raw_value
