@@ -51,11 +51,8 @@ class JavascriptWorkdir(CodeBaseWorkdir):
         return options
 
     def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
-        import wexample_wex_addon_dev_javascript
         from wexample_filestate.const.disk import DiskItemType
-        from wexample_helpers.helpers.module import module_get_path
         from wexample_helpers.helpers.array import array_dict_get_by
-        from wexample_helpers.helpers.file import file_read
 
         from wexample_wex_addon_dev_javascript.file.javascript_package_json_file import (
             JavascriptPackageJsonFile,
@@ -107,28 +104,6 @@ class JavascriptWorkdir(CodeBaseWorkdir):
                     self._create_javascript_file_children_filter(),
                 ],
             },
-            {
-                "name": ".github",
-                "type": DiskItemType.DIRECTORY,
-                "should_exist": True,
-                "children": [
-                    {
-                        "name": "workflows",
-                        "type": DiskItemType.DIRECTORY,
-                        "should_exist": True,
-                        "children": [
-                            {
-                                "name": "publish.yml",
-                                "type": DiskItemType.FILE,
-                                "should_exist": True,
-                                "content":  file_read(
-                                    module_get_path(wexample_wex_addon_dev_javascript) / "resources" / "package_publish.yml"
-                                ),
-                            }
-                        ]
-                    }
-                ],
-            }
         ])
 
         return raw_value
