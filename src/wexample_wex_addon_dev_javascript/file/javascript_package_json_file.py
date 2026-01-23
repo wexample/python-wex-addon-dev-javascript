@@ -54,7 +54,59 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
         if remote_url:
             content["repository"] = remote_url
 
+        self._apply_default_publish_config(content)
+
         return super().dumps(content or {})
+
+    def _apply_default_publish_config(self, content: dict) -> None:
+        content.setdefault("type", "module")
+
+        publish_config = content.get("publishConfig")
+        if publish_config is None:
+            content["publishConfig"] = {"access": "public"}
+        elif isinstance(publish_config, dict):
+            publish_config.setdefault("access", "public")
+
+        files = content.get("files")
+        exports = content.get("exports")
+
+        exports_text = str(exports) if exports is not None else ""
+        files_list = files if isinstance(files, list) else []
+        uses_dist = "dist" in exports_text or "dist" in files_list
+        uses_src = "src" in exports_text or "src" in files_list
+
+        if exports is None and (files is None or (uses_src and not uses_dist)):
+            content.setdefault("files", ["src"])
+            content.setdefault(
+                "exports",
+                {
+                    "./*": {
+                        "types": "./src/*",
+                        "default": "./src/*",
+                    }
+                },
+            )
+            content.setdefault(
+                "typesVersions",
+                {
+                    "*": {
+                        "*": ["src/*"],
+                    }
+                },
+            )
+            return
+
+        if uses_src and not uses_dist:
+            if files is None:
+                content.setdefault("files", ["src"])
+            content.setdefault(
+                "typesVersions",
+                {
+                    "*": {
+                        "*": ["src/*"],
+                    }
+                },
+            )
 
     def get_dependencies_versions(
             self, optional: bool = False, group: str = "dev"
