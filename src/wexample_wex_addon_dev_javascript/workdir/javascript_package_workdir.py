@@ -86,16 +86,8 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
 
     def _publish(self, force: bool = False) -> None:
         """Create a git tag (vX.Y.Z) to trigger Trusted Publisher workflow."""
-        from wexample_helpers.helpers.shell import shell_run
-
         tag = f"v{self.get_project_version()}"
         cwd = self.get_path()
-
-        shell_run(
-            ["npm", "install", "--package-lock-only", "--ignore-scripts"],
-            inherit_stdio=True,
-            cwd=cwd,
-        )
 
         if git_tag_exists(tag, cwd=cwd, inherit_stdio=False):
             self.log(f"Tag {tag} already exists, skipping creation.")
