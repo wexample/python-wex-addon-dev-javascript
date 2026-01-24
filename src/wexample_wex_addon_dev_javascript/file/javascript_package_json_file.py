@@ -86,14 +86,16 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
         uses_dist = "dist" in exports_text or "dist" in files_list
         uses_src = "src" in exports_text or "src" in files_list
 
+        # Default strategy: publish built artifacts (dist) so consumers don't need
+        # to transpile TS/ESM sources from node_modules.
         if exports is None and (files is None or (uses_src and not uses_dist)):
-            content.setdefault("files", ["src"])
+            content.setdefault("files", ["dist"])
             content.setdefault(
                 "exports",
                 {
                     "./*": {
-                        "types": "./src/*",
-                        "default": "./src/*",
+                        "types": "./dist/*.d.ts",
+                        "default": "./dist/*.js",
                     }
                 },
             )
@@ -101,7 +103,7 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
                 "typesVersions",
                 {
                     "*": {
-                        "*": ["src/*"],
+                        "*": ["dist/*"],
                     }
                 },
             )
