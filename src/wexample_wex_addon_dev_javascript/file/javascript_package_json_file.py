@@ -7,6 +7,17 @@ from wexample_wex_addon_app.item.file.mixin.app_dependencies_config_file_mixin i
 
 @base_class
 class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
+    def add_dependency(
+            self,
+            operator: str = "",
+            **kwargs,
+    ) -> bool:
+        # NPM uses bare versions (or ^/~), not "==".
+        return super().add_dependency(
+            operator=operator,
+            **kwargs,
+        )
+
     def add_dependency_from_string(
             self,
             package_name: str,
