@@ -57,6 +57,9 @@ class JavascriptWorkdir(CodeBaseWorkdir):
         from wexample_wex_addon_dev_javascript.file.javascript_package_json_file import (
             JavascriptPackageJsonFile,
         )
+        from wexample_wex_addon_dev_javascript.file.javascript_tsconfig_json_file import (
+            JavascriptTsconfigJsonFile,
+        )
 
         raw_value = super().prepare_value(raw_value=raw_value)
 
@@ -87,6 +90,12 @@ class JavascriptWorkdir(CodeBaseWorkdir):
             {
                 "class": JavascriptPackageJsonFile,
                 "name": "package.json",
+                "type": DiskItemType.FILE,
+                "should_exist": True,
+            },
+            {
+                "class": JavascriptTsconfigJsonFile,
+                "name": "tsconfig.json",
                 "type": DiskItemType.FILE,
                 "should_exist": True,
             },
