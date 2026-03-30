@@ -23,15 +23,58 @@ if TYPE_CHECKING:
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
-    def get_project_name(self) -> str:
-        return f"@{self.get_vendor_name()}/{string_to_kebab_case(super().get_project_name())}"
-
     def get_package_dependency_name(self) -> str:
         return self.get_package_import_name()
 
     def get_package_import_name(self) -> str:
         """Get the full package import name with vendor prefix."""
         return self.get_project_name()
+
+    def get_project_name(self) -> str:
+        return f"@{self.get_vendor_name()}/{string_to_kebab_case(super().get_project_name())}"
+
+    def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
+        from wexample_filestate.const.disk import DiskItemType
+        from wexample_helpers.helpers.file import file_read
+        from wexample_helpers.helpers.module import module_get_path
+
+        import wexample_wex_addon_dev_javascript
+
+        raw_value = super().prepare_value(raw_value=raw_value)
+        children = raw_value["children"]
+
+        children.extend(
+            [
+                {
+                    "name": ".github",
+                    "type": DiskItemType.DIRECTORY,
+                    "should_exist": True,
+                    "children": [
+                        {
+                            "name": "workflows",
+                            "type": DiskItemType.DIRECTORY,
+                            "should_exist": True,
+                            "children": [
+                                {
+                                    "name": "publish.yml",
+                                    "type": DiskItemType.FILE,
+                                    "should_exist": True,
+                                    "content": file_read(
+                                        module_get_path(
+                                            wexample_wex_addon_dev_javascript
+                                        )
+                                        / "resources"
+                                        / "package_publish.yml"
+                                    ),
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ]
+        )
+
+        return raw_value
 
     def _get_readme_content(self) -> ReadmeContentConfigValue | None:
         from wexample_wex_addon_dev_javascript.config_value.javascript_package_readme_config_value import (
@@ -46,43 +89,6 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         )
 
         return JavascriptPackagesSuiteWorkdir
-
-
-    def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
-        import wexample_wex_addon_dev_javascript
-        from wexample_filestate.const.disk import DiskItemType
-        from wexample_helpers.helpers.module import module_get_path
-        from wexample_helpers.helpers.file import file_read
-
-        raw_value = super().prepare_value(raw_value=raw_value)
-        children = raw_value["children"]
-
-        children.extend([
-            {
-                "name": ".github",
-                "type": DiskItemType.DIRECTORY,
-                "should_exist": True,
-                "children": [
-                    {
-                        "name": "workflows",
-                        "type": DiskItemType.DIRECTORY,
-                        "should_exist": True,
-                        "children": [
-                            {
-                                "name": "publish.yml",
-                                "type": DiskItemType.FILE,
-                                "should_exist": True,
-                                "content":  file_read(
-                                    module_get_path(wexample_wex_addon_dev_javascript) / "resources" / "package_publish.yml"
-                                ),
-                            }
-                        ]
-                    }
-                ],
-            }
-        ])
-
-        return raw_value
 
     def _publish(self, force: bool = False) -> None:
         """Create a git tag (vX.Y.Z) to trigger Trusted Publisher workflow."""

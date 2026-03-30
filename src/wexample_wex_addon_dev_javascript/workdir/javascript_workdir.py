@@ -86,41 +86,43 @@ class JavascriptWorkdir(CodeBaseWorkdir):
             ]
         )
 
-        children.extend([
-            {
-                "class": JavascriptPackageJsonFile,
-                "name": "package.json",
-                "type": DiskItemType.FILE,
-                "should_exist": True,
-            },
-            {
-                "class": JavascriptTsconfigJsonFile,
-                "name": "tsconfig.json",
-                "type": DiskItemType.FILE,
-                "should_exist": True,
-            },
-            {
-                "name": ".npmrc",
-                "type": DiskItemType.FILE,
-                "should_exist": True,
-            },
-            {
-                "name": "tests",
-                "type": DiskItemType.DIRECTORY,
-                "should_exist": True,
-                "children": [
-                    self._create_javascript_file_children_filter(),
-                ],
-            },
-            {
-                "name": "src",
-                "type": DiskItemType.DIRECTORY,
-                "should_exist": True,
-                "children": [
-                    self._create_javascript_file_children_filter(),
-                ],
-            },
-        ])
+        children.extend(
+            [
+                {
+                    "class": JavascriptPackageJsonFile,
+                    "name": "package.json",
+                    "type": DiskItemType.FILE,
+                    "should_exist": True,
+                },
+                {
+                    "class": JavascriptTsconfigJsonFile,
+                    "name": "tsconfig.json",
+                    "type": DiskItemType.FILE,
+                    "should_exist": True,
+                },
+                {
+                    "name": ".npmrc",
+                    "type": DiskItemType.FILE,
+                    "should_exist": True,
+                },
+                {
+                    "name": "tests",
+                    "type": DiskItemType.DIRECTORY,
+                    "should_exist": True,
+                    "children": [
+                        self._create_javascript_file_children_filter(),
+                    ],
+                },
+                {
+                    "name": "src",
+                    "type": DiskItemType.DIRECTORY,
+                    "should_exist": True,
+                    "children": [
+                        self._create_javascript_file_children_filter(),
+                    ],
+                },
+            ]
+        )
 
         return raw_value
 

@@ -2,15 +2,17 @@ from __future__ import annotations
 
 from wexample_filestate.item.file.json_file import JsonFile
 from wexample_helpers.decorator.base_class import base_class
-from wexample_wex_addon_app.item.file.mixin.app_dependencies_config_file_mixin import AppDependenciesConfigFileMixin
+from wexample_wex_addon_app.item.file.mixin.app_dependencies_config_file_mixin import (
+    AppDependenciesConfigFileMixin,
+)
 
 
 @base_class
 class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
     def add_dependency(
-            self,
-            operator: str = "",
-            **kwargs,
+        self,
+        operator: str = "",
+        **kwargs,
     ) -> bool:
         # NPM uses bare versions (or ^/~), not "==".
         return super().add_dependency(
@@ -19,12 +21,12 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
         )
 
     def add_dependency_from_string(
-            self,
-            package_name: str,
-            version: str,
-            operator: str = "",
-            optional: bool = False,
-            group: None | str = None,
+        self,
+        package_name: str,
+        version: str,
+        operator: str = "",
+        optional: bool = False,
+        group: None | str = None,
     ) -> bool:
         """
         Add or update an npm dependency entry from a raw package name + version string.
@@ -68,6 +70,15 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
         self._apply_default_publish_config(content)
 
         return super().dumps(content or {})
+
+    def get_dependencies_versions(
+        self, optional: bool = False, group: str = "dev"
+    ) -> dict[str, str]:
+        return (
+            self.read_config()
+            .search(path="dependencies")
+            .get_dict_or_default(default={})
+        )
 
     def _apply_default_publish_config(self, content: dict) -> None:
         content.setdefault("type", "module")
@@ -120,12 +131,3 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
                     }
                 },
             )
-
-    def get_dependencies_versions(
-            self, optional: bool = False, group: str = "dev"
-    ) -> dict[str, str]:
-        return (
-            self.read_config()
-            .search(path="dependencies")
-            .get_dict_or_default(default={})
-        )
