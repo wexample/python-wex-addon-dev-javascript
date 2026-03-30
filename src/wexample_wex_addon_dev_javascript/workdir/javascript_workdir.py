@@ -57,20 +57,21 @@ class JavascriptWorkdir(CodeBaseWorkdir):
         from wexample_wex_addon_dev_javascript.file.javascript_package_json_file import (
             JavascriptPackageJsonFile,
         )
+        from wexample_wex_addon_dev_javascript.file.javascript_tsconfig_json_file import (
+            JavascriptTsconfigJsonFile,
+        )
 
         raw_value = super().prepare_value(raw_value=raw_value)
 
         # Ensure a package.json file exists for any JavaScript package project
         children = raw_value["children"]
 
-        children.append(
-            {
-                "class": JavascriptPackageJsonFile,
-                "name": "package.json",
-                "type": DiskItemType.FILE,
-                "should_exist": True,
-            }
-        )
+        javascript_options = raw_value.setdefault("javascript", [])
+        if isinstance(javascript_options, list):
+            if "npm_package_lock" not in javascript_options:
+                javascript_options.append("npm_package_lock")
+        elif isinstance(javascript_options, dict):
+            javascript_options.setdefault("npm_package_lock", True)
 
         # Add rules to .gitignore
         array_dict_get_by("name", ".gitignore", children).setdefault(
@@ -87,6 +88,23 @@ class JavascriptWorkdir(CodeBaseWorkdir):
 
         children.extend(
             [
+                {
+                    "class": JavascriptPackageJsonFile,
+                    "name": "package.json",
+                    "type": DiskItemType.FILE,
+                    "should_exist": True,
+                },
+                {
+                    "class": JavascriptTsconfigJsonFile,
+                    "name": "tsconfig.json",
+                    "type": DiskItemType.FILE,
+                    "should_exist": True,
+                },
+                {
+                    "name": ".npmrc",
+                    "type": DiskItemType.FILE,
+                    "should_exist": True,
+                },
                 {
                     "name": "tests",
                     "type": DiskItemType.DIRECTORY,

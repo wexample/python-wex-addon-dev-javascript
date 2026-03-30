@@ -1,16 +1,19 @@
 from __future__ import annotations
 
-import os
-import subprocess
 from typing import TYPE_CHECKING
 
 from wexample_helpers.helpers.string import string_to_kebab_case
+from wexample_helpers_git.helpers.git import (
+    git_tag_annotated,
+    git_tag_exists,
+)
 
 from wexample_wex_addon_dev_javascript.workdir.javascript_workdir import (
     JavascriptWorkdir,
 )
 
 if TYPE_CHECKING:
+    from wexample_config.const.types import DictConfig
     from wexample_filestate.config_value.readme_content_config_value import (
         ReadmeContentConfigValue,
     )
@@ -20,11 +23,58 @@ if TYPE_CHECKING:
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
+    def get_package_dependency_name(self) -> str:
+        return self.get_package_import_name()
+
     def get_package_import_name(self) -> str:
         """Get the full package import name with vendor prefix."""
-        return (
-            f"@{self.get_vendor_name()}/{string_to_kebab_case(self.get_project_name())}"
+        return self.get_project_name()
+
+    def get_project_name(self) -> str:
+        return f"@{self.get_vendor_name()}/{string_to_kebab_case(super().get_project_name())}"
+
+    def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
+        from wexample_filestate.const.disk import DiskItemType
+        from wexample_helpers.helpers.file import file_read
+        from wexample_helpers.helpers.module import module_get_path
+
+        import wexample_wex_addon_dev_javascript
+
+        raw_value = super().prepare_value(raw_value=raw_value)
+        children = raw_value["children"]
+
+        children.extend(
+            [
+                {
+                    "name": ".github",
+                    "type": DiskItemType.DIRECTORY,
+                    "should_exist": True,
+                    "children": [
+                        {
+                            "name": "workflows",
+                            "type": DiskItemType.DIRECTORY,
+                            "should_exist": True,
+                            "children": [
+                                {
+                                    "name": "publish.yml",
+                                    "type": DiskItemType.FILE,
+                                    "should_exist": True,
+                                    "content": file_read(
+                                        module_get_path(
+                                            wexample_wex_addon_dev_javascript
+                                        )
+                                        / "resources"
+                                        / "package_publish.yml"
+                                    ),
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ]
         )
+
+        return raw_value
 
     def _get_readme_content(self) -> ReadmeContentConfigValue | None:
         from wexample_wex_addon_dev_javascript.config_value.javascript_package_readme_config_value import (
@@ -41,53 +91,14 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         return JavascriptPackagesSuiteWorkdir
 
     def _publish(self, force: bool = False) -> None:
-        """Publish the package to npm, skipping if the version already exists."""
-        from wexample_helpers.helpers.shell import shell_run
+        """Create a git tag (vX.Y.Z) to trigger Trusted Publisher workflow."""
+        tag = f"v{self.get_project_version()}"
+        cwd = self.get_path()
 
-        package_name = self.get_package_name()
-        version = self.get_project_version()
-        registry = self.get_env_parameter_or_suite_fallback(
-            key="NPM_REGISTRY", default="https://registry.npmjs.org"
-        )
+        if git_tag_exists(tag, cwd=cwd, inherit_stdio=False):
+            self.log(f"Tag {tag} already exists, skipping creation.")
+        else:
+            git_tag_annotated(tag, f"Release {tag}", cwd=cwd, inherit_stdio=True)
 
-        # Detect if the version already exists on the registry
-        release_exists = False
-        try:
-            shell_run(
-                [
-                    "npm",
-                    "view",
-                    f"{package_name}@{version}",
-                    "version",
-                    "--registry",
-                    registry,
-                ],
-                cwd=self.get_path(),
-                inherit_stdio=False,
-            )
-            release_exists = True
-        except subprocess.CalledProcessError:
-            release_exists = False
-
-        if release_exists and not force:
-            self.warning(
-                f'Trying to publish an existing release for package "{package_name}" version {version}'
-            )
-            return
-
-        token = self.get_env_parameter_or_suite_fallback("NPM_TOKEN")
-        env = os.environ.copy()
-        host = registry.rstrip("/").split("://")[-1]
-
-        if registry:
-            env["npm_config_registry"] = registry
-        if token:
-            env["NPM_TOKEN"] = token
-            env[f"npm_config_//{host}/:_authToken"] = token
-
-        shell_run(
-            ["npm", "publish", "--registry", registry],
-            cwd=self.get_path(),
-            env=env,
-            inherit_stdio=True,
-        )
+        # Uses git repo to deploy packages (tag push triggers GitHub Actions publication).
+        self.push_to_deployment_remote()
