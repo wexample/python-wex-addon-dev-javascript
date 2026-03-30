@@ -90,8 +90,15 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
 
         return JavascriptPackagesSuiteWorkdir
 
+    def _get_github_remote_name(self) -> str:
+        return self.search_app_or_suite_runtime_config(
+            "git.github_remote_name", default="github"
+        ).get_str()
+
     def _publish(self, force: bool = False) -> None:
         """Create a git tag (vX.Y.Z) to trigger Trusted Publisher workflow."""
+        from wexample_helpers_git.helpers.git import git_push_tag
+
         tag = f"v{self.get_project_version()}"
         cwd = self.get_path()
 
@@ -100,5 +107,5 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         else:
             git_tag_annotated(tag, f"Release {tag}", cwd=cwd, inherit_stdio=True)
 
-        # Uses git repo to deploy packages (tag push triggers GitHub Actions publication).
-        self.push_to_deployment_remote()
+        # Push the v* tag to GitHub to trigger GitHub Actions publication workflow.
+        git_push_tag(tag, cwd=cwd, remote=self._get_github_remote_name(), inherit_stdio=True)
