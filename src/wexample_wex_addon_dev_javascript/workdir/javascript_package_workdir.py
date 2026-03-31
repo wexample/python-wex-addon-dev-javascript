@@ -90,11 +90,6 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
 
         return JavascriptPackagesSuiteWorkdir
 
-    def _get_github_remote_name(self) -> str:
-        return self.search_app_or_suite_runtime_config(
-            "git.github_remote_name", default="github"
-        ).get_str()
-
     def _wait_for_registry(self) -> None:
         """Poll the npm registry until the current version is available (max 20 min)."""
         import time
@@ -133,8 +128,13 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         )
 
     def _publish(self, force: bool = False) -> None:
-        """Create a git tag (vX.Y.Z) to trigger Trusted Publisher workflow."""
+        """Push a git tag to the deployment remote to trigger a CI/CD publication workflow."""
         from wexample_helpers_git.helpers.git import git_push_tag
+
+        remote = self._get_deployment_remote_name()
+        if not remote:
+            self.log("No deployment remote configured, skipping publication.")
+            return
 
         tag = f"v{self.get_project_version()}"
         cwd = self.get_path()
@@ -144,5 +144,4 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         else:
             git_tag_annotated(tag, f"Release {tag}", cwd=cwd, inherit_stdio=True)
 
-        # Push the v* tag to GitHub to trigger GitHub Actions publication workflow.
-        git_push_tag(tag, cwd=cwd, remote=self._get_github_remote_name(), inherit_stdio=True)
+        git_push_tag(tag, cwd=cwd, remote=remote, inherit_stdio=True)
