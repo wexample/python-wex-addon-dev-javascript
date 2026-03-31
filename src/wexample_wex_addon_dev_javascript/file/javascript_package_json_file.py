@@ -74,11 +74,10 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
     def get_dependencies_versions(
         self, optional: bool = False, group: str = "dev"
     ) -> dict[str, str]:
-        return (
-            self.read_config()
-            .search(path="dependencies")
-            .get_dict_or_default(default={})
-        )
+        config = self.read_config()
+        deps = config.search(path="dependencies").get_dict_or_default(default={})
+        peer = config.search(path="peerDependencies").get_dict_or_default(default={})
+        return {**deps, **peer}
 
     def _apply_default_publish_config(self, content: dict) -> None:
         content.setdefault("type", "module")
