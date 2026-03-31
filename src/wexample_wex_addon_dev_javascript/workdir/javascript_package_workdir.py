@@ -95,6 +95,43 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
             "git.github_remote_name", default="github"
         ).get_str()
 
+    def _wait_for_registry(self) -> None:
+        """Poll the npm registry until the current version is available (max 20 min)."""
+        import time
+        import urllib.error
+        import urllib.request
+
+        package = self.get_project_name()
+        version = self.get_project_version()
+        url = f"https://registry.npmjs.org/{package}/{version}"
+        max_attempts = 40
+        delay = 30.0
+
+        self.log(f"Waiting for {package}@{version} to appear on npm registry…")
+
+        for attempt in range(1, max_attempts + 1):
+            try:
+                with urllib.request.urlopen(url, timeout=10) as resp:
+                    if resp.status == 200:
+                        self.success(f"{package}@{version} is available on npm.")
+                        return
+            except urllib.error.HTTPError as e:
+                if e.code != 404:
+                    raise
+            except Exception:
+                pass
+
+            self.log(
+                f"Not yet available (attempt {attempt}/{max_attempts}), "
+                f"retrying in {int(delay)}s…"
+            )
+            time.sleep(delay)
+
+        raise RuntimeError(
+            f"Timed out waiting for {package}@{version} on npm after "
+            f"{max_attempts * int(delay) // 60} minutes."
+        )
+
     def _publish(self, force: bool = False) -> None:
         """Create a git tag (vX.Y.Z) to trigger Trusted Publisher workflow."""
         from wexample_helpers_git.helpers.git import git_push_tag
