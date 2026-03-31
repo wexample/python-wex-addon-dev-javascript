@@ -91,7 +91,13 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         return JavascriptPackagesSuiteWorkdir
 
     def _wait_for_registry(self) -> None:
-        """Poll the configured npm registry until the current version is available (max 20 min)."""
+        """Poll the configured npm registry until the current version is available (max 20 min).
+
+        Fetches the package manifest and checks for the version in 'versions' — compatible
+        with both public npm and private registries (e.g. GitLab) that don't expose
+        per-version URLs.
+        """
+        import json
         import time
         import urllib.error
         import urllib.request
@@ -102,11 +108,9 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         registry_base = self.get_runtime_config().search("npm.registry_url").get_str_or_none()
         token = self.get_runtime_config().search("npm.api_token").get_str_or_none()
 
-        if registry_base:
-            encoded = package.replace("/", "%2F").replace("@", "%40")
-            url = f"{registry_base.rstrip('/')}/{encoded}/{version}"
-        else:
-            url = f"https://registry.npmjs.org/{package}/{version}"
+        encoded = package.replace("/", "%2F")
+        base = (registry_base or "https://registry.npmjs.org").rstrip("/")
+        url = f"{base}/{encoded}"
 
         max_attempts = 40
         delay = 30.0
@@ -120,8 +124,10 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
                     req.add_header("Authorization", f"Bearer {token}")
                 with urllib.request.urlopen(req, timeout=10) as resp:
                     if resp.status == 200:
-                        self.success(f"{package}@{version} is available.")
-                        return
+                        data = json.loads(resp.read())
+                        if version in data.get("versions", {}):
+                            self.success(f"{package}@{version} is available.")
+                            return
             except urllib.error.HTTPError as e:
                 if e.code != 404:
                     raise
