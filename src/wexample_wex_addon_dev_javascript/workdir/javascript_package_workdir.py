@@ -23,6 +23,30 @@ if TYPE_CHECKING:
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
+    def _classify_version_bump(self, last_tag: str) -> str:
+        from wexample_helpers.const.types import (
+            UPGRADE_TYPE_MAJOR,
+            UPGRADE_TYPE_MINOR,
+        )
+        from wexample_helpers.helpers.shell import shell_run
+        from wexample_helpers_git.helpers.git import git_has_changes_since_tag
+
+        if not git_has_changes_since_tag(last_tag, "src", cwd=self.get_path()):
+            return UPGRADE_TYPE_MINOR
+
+        # Check if all changes in src/ are whitespace-only — safe to treat as patch
+        result = shell_run(
+            ["git", "diff", "-w", "--ignore-blank-lines", last_tag, "--", "src/"],
+            cwd=self.get_path(),
+            check=False,
+            capture=True,
+        )
+        if not result.stdout.strip():
+            self.log("Only whitespace changes detected in src/, treating as patch.")
+            return UPGRADE_TYPE_MINOR
+
+        return UPGRADE_TYPE_MAJOR
+
     def _get_critical_directories(self) -> list[str]:
         return ["src"]
 
