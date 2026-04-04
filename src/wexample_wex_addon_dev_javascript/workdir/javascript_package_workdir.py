@@ -23,6 +23,9 @@ if TYPE_CHECKING:
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
+    def _get_critical_directories(self) -> list[str]:
+        return ["src"]
+
     def get_package_dependency_name(self) -> str:
         return self.get_package_import_name()
 
