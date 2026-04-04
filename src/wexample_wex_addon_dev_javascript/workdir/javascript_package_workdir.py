@@ -42,8 +42,23 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
             capture=True,
         )
         if not result.stdout.strip():
-            self.log("Only whitespace changes detected in src/, treating as patch.")
+            self.log("Only whitespace changes in src/, treating as patch.")
             return UPGRADE_TYPE_MINOR
+
+        # Check if all changed files in src/ are non-TypeScript — cannot break the TS API
+        changed_files = shell_run(
+            ["git", "diff", "--name-only", last_tag, "--", "src/"],
+            cwd=self.get_path(),
+            check=False,
+            capture=True,
+        )
+        ts_files = [
+            f for f in changed_files.stdout.splitlines()
+            if f.endswith(".ts") or f.endswith(".tsx")
+        ]
+        if not ts_files:
+            self.log("Only non-TypeScript files changed in src/, treating as minor.")
+            return UPGRADE_TYPE_INTERMEDIATE
 
         return UPGRADE_TYPE_MAJOR
 
