@@ -26,7 +26,7 @@ def vite__service__ready(
     port = service.manifest.get("vars", {}).get("VITE_PORT", {}).get("default", "8080")
 
     result = subprocess.run(
-        ["docker", "exec", container_name, "curl", "-sf", f"http://localhost:{port}"],
+        ["docker", "exec", container_name, "bun", "-e", f"await fetch('http://localhost:{port}')"],
         capture_output=True,
     )
 
