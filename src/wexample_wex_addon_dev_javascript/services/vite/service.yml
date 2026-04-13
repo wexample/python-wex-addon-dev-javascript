@@ -1,0 +1,10 @@
+name: vite
+tags:
+  - frontend
+  - javascript
+docker:
+  compose: docker/docker-compose.yml
+vars:
+  VITE_PORT:
+    default: "8080"
+    description: "Port exposed by the Vite dev server"

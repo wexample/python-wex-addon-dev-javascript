@@ -1,0 +1,26 @@
+services:
+
+  vite:
+    container_name: ${APP_PROJECT_NAME}_vite
+    image: oven/bun:latest
+    working_dir: /app
+    command: sh -c "bun install && bun run dev --host"
+    environment:
+      VIRTUAL_HOST: ${APP_DOMAINS_STRING}
+      VIRTUAL_PORT: ${VITE_PORT:-8080}
+    volumes:
+      - ${APP_PATH}:/app
+      - vite_node_modules:/app/node_modules
+    healthcheck:
+      test: ["CMD", "bun", "-e", "await fetch('http://localhost:8080')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks:
+      wex_net:
+        aliases:
+          - vite
+
+volumes:
+  vite_node_modules:
