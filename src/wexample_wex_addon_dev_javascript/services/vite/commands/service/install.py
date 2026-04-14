@@ -10,7 +10,10 @@ if TYPE_CHECKING:
     from wexample_wex_core.context.execution_context import ExecutionContext
 
 
-@command(type=COMMAND_TYPE_SERVICE, description="Patch vite.config.ts to allow all hosts (needed behind a reverse proxy)")
+@command(
+    type=COMMAND_TYPE_SERVICE,
+    description="Patch vite.config.ts to allow all hosts (needed behind a reverse proxy)",
+)
 def vite__service__install(
     context: ExecutionContext,
     service: AppService,
@@ -35,7 +38,7 @@ def vite__service__install(
         if "defineConfig()" in content:
             content = content.replace(
                 "defineConfig()",
-                'defineConfig({ vite: { server: { allowedHosts: true } } })',
+                "defineConfig({ vite: { server: { allowedHosts: true } } })",
             )
         elif re.search(r"defineConfig\(\s*\{", content):
             content = re.sub(

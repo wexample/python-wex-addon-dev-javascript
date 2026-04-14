@@ -11,7 +11,9 @@ if TYPE_CHECKING:
     from wexample_wex_core.context.execution_context import ExecutionContext
 
 
-@command(type=COMMAND_TYPE_SERVICE, description="Check if the Vite dev server is responding")
+@command(
+    type=COMMAND_TYPE_SERVICE, description="Check if the Vite dev server is responding"
+)
 def vite__service__ready(
     context: ExecutionContext,
     service: AppService,
@@ -26,7 +28,14 @@ def vite__service__ready(
     port = service.manifest.get("vars", {}).get("VITE_PORT", {}).get("default", "8080")
 
     result = subprocess.run(
-        ["docker", "exec", container_name, "bun", "-e", f"await fetch('http://localhost:{port}')"],
+        [
+            "docker",
+            "exec",
+            container_name,
+            "bun",
+            "-e",
+            f"await fetch('http://localhost:{port}')",
+        ],
         capture_output=True,
     )
 

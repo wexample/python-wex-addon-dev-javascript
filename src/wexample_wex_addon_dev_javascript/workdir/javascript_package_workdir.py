@@ -23,48 +23,6 @@ if TYPE_CHECKING:
 
 
 class JavascriptPackageWorkdir(JavascriptWorkdir):
-    def _classify_version_bump(self, last_tag: str) -> str:
-        from wexample_helpers.const.types import (
-            UPGRADE_TYPE_MAJOR,
-            UPGRADE_TYPE_MINOR,
-        )
-        from wexample_helpers.helpers.shell import shell_run
-        from wexample_helpers_git.helpers.git import git_has_changes_since_tag
-
-        if not git_has_changes_since_tag(last_tag, "src", cwd=self.get_path()):
-            return UPGRADE_TYPE_MINOR
-
-        # Check if all changes in src/ are whitespace-only — safe to treat as patch
-        result = shell_run(
-            ["git", "diff", "-w", "--ignore-blank-lines", last_tag, "--", "src/"],
-            cwd=self.get_path(),
-            check=False,
-            capture=True,
-        )
-        if not result.stdout.strip():
-            self.log("Only whitespace changes in src/, treating as patch.")
-            return UPGRADE_TYPE_MINOR
-
-        # Check if all changed files in src/ are non-TypeScript — cannot break the TS API
-        changed_files = shell_run(
-            ["git", "diff", "--name-only", last_tag, "--", "src/"],
-            cwd=self.get_path(),
-            check=False,
-            capture=True,
-        )
-        ts_files = [
-            f for f in changed_files.stdout.splitlines()
-            if f.endswith(".ts") or f.endswith(".tsx")
-        ]
-        if not ts_files:
-            self.log("Only non-TypeScript files changed in src/, treating as minor.")
-            return UPGRADE_TYPE_INTERMEDIATE
-
-        return UPGRADE_TYPE_MAJOR
-
-    def _get_critical_directories(self) -> list[str]:
-        return ["src"]
-
     def get_package_dependency_name(self) -> str:
         return self.get_package_import_name()
 
@@ -118,6 +76,49 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
 
         return raw_value
 
+    def _classify_version_bump(self, last_tag: str) -> str:
+        from wexample_helpers.const.types import (
+            UPGRADE_TYPE_MAJOR,
+            UPGRADE_TYPE_MINOR,
+        )
+        from wexample_helpers.helpers.shell import shell_run
+        from wexample_helpers_git.helpers.git import git_has_changes_since_tag
+
+        if not git_has_changes_since_tag(last_tag, "src", cwd=self.get_path()):
+            return UPGRADE_TYPE_MINOR
+
+        # Check if all changes in src/ are whitespace-only — safe to treat as patch
+        result = shell_run(
+            ["git", "diff", "-w", "--ignore-blank-lines", last_tag, "--", "src/"],
+            cwd=self.get_path(),
+            check=False,
+            capture=True,
+        )
+        if not result.stdout.strip():
+            self.log("Only whitespace changes in src/, treating as patch.")
+            return UPGRADE_TYPE_MINOR
+
+        # Check if all changed files in src/ are non-TypeScript — cannot break the TS API
+        changed_files = shell_run(
+            ["git", "diff", "--name-only", last_tag, "--", "src/"],
+            cwd=self.get_path(),
+            check=False,
+            capture=True,
+        )
+        ts_files = [
+            f
+            for f in changed_files.stdout.splitlines()
+            if f.endswith(".ts") or f.endswith(".tsx")
+        ]
+        if not ts_files:
+            self.log("Only non-TypeScript files changed in src/, treating as minor.")
+            return UPGRADE_TYPE_INTERMEDIATE
+
+        return UPGRADE_TYPE_MAJOR
+
+    def _get_critical_directories(self) -> list[str]:
+        return ["src"]
+
     def _get_readme_content(self) -> ReadmeContentConfigValue | None:
         from wexample_wex_addon_dev_javascript.config_value.javascript_package_readme_config_value import (
             JavascriptPackageReadmeContentConfigValue,
@@ -131,6 +132,25 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         )
 
         return JavascriptPackagesSuiteWorkdir
+
+    def _publish(self, force: bool = False) -> None:
+        """Push a git tag to the deployment remote to trigger a CI/CD publication workflow."""
+        from wexample_helpers_git.helpers.git import git_push_tag
+
+        remote = self._get_deployment_remote_name()
+        if not remote:
+            self.log("No deployment remote configured, skipping publication.")
+            return
+
+        tag = f"v{self.get_project_version()}"
+        cwd = self.get_path()
+
+        if git_tag_exists(tag, cwd=cwd, inherit_stdio=False):
+            self.log(f"Tag {tag} already exists, skipping creation.")
+        else:
+            git_tag_annotated(tag, f"Release {tag}", cwd=cwd, inherit_stdio=True)
+
+        git_push_tag(tag, cwd=cwd, remote=remote, inherit_stdio=True)
 
     def _wait_for_registry(self) -> None:
         """Poll the configured npm registry until the current version is available (max 20 min).
@@ -147,7 +167,9 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         package = self.get_project_name()
         version = self.get_project_version()
 
-        registry_base = self.get_runtime_config().search("npm.registry_url").get_str_or_none()
+        registry_base = (
+            self.get_runtime_config().search("npm.registry_url").get_str_or_none()
+        )
         token = self.get_runtime_config().search("npm.api_token").get_str_or_none()
 
         encoded = package.replace("/", "%2F")
@@ -186,22 +208,3 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
             f"Timed out waiting for {package}@{version} on registry after "
             f"{max_attempts * int(delay) // 60} minutes."
         )
-
-    def _publish(self, force: bool = False) -> None:
-        """Push a git tag to the deployment remote to trigger a CI/CD publication workflow."""
-        from wexample_helpers_git.helpers.git import git_push_tag
-
-        remote = self._get_deployment_remote_name()
-        if not remote:
-            self.log("No deployment remote configured, skipping publication.")
-            return
-
-        tag = f"v{self.get_project_version()}"
-        cwd = self.get_path()
-
-        if git_tag_exists(tag, cwd=cwd, inherit_stdio=False):
-            self.log(f"Tag {tag} already exists, skipping creation.")
-        else:
-            git_tag_annotated(tag, f"Release {tag}", cwd=cwd, inherit_stdio=True)
-
-        git_push_tag(tag, cwd=cwd, remote=remote, inherit_stdio=True)
