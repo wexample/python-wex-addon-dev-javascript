@@ -1,0 +1,7 @@
+name: node
+tags:
+  - javascript
+  - node
+  - yarn
+docker:
+  compose: docker/docker-compose.yml
