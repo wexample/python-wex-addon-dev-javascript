@@ -1,0 +1,15 @@
+services:
+  node:
+    container_name: ${APP_PROJECT_NAME}_node
+    image: node:20-alpine
+    working_dir: /var/www/html
+    command: tail -f /dev/null
+    volumes:
+      - ${APP_PATH}:/var/www/html
+      - node_modules:/var/www/html/node_modules
+    extends:
+      file: ${SERVICE_DEFAULT_COMPOSE}
+      service: default
+
+volumes:
+  node_modules:
