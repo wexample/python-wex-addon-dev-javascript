@@ -13,12 +13,6 @@ services:
     volumes:
       - ${APP_PATH}:/app
       - vite_node_modules:/app/node_modules
-    healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:8080')"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
     networks:
       wex_net:
         aliases:
