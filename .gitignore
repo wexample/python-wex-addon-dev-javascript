@@ -56,3 +56,4 @@ coverage*.lcov
 *.pid
 *.pid.lock
 /coverage.json
+/.pdm-build/
