@@ -4,4 +4,4 @@ domains: []
 global:
   name: wex_addon_dev_javascript
   type: app
-  version: 7.1.1
+  version: 7.1.2
