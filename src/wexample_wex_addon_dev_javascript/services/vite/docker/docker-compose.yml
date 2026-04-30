@@ -4,7 +4,7 @@ services:
     container_name: ${APP_PROJECT_NAME}_vite
     image: oven/bun:latest
     working_dir: /app
-    command: sh -c "bun install && bun run dev --host"
+    command: sh -c "bun install --no-cache && bun run dev --host"
     environment:
       VIRTUAL_HOST: ${APP_DOMAINS_STRING}
       VIRTUAL_PORT: ${VITE_PORT:-8080}
