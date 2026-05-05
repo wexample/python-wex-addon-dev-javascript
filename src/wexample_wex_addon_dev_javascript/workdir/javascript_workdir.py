@@ -66,12 +66,11 @@ class JavascriptWorkdir(CodeBaseWorkdir):
         # Ensure a package.json file exists for any JavaScript package project
         children = raw_value["children"]
 
-        javascript_options = raw_value.setdefault("javascript", [])
+        javascript_options = raw_value.setdefault("javascript", {})
         if isinstance(javascript_options, list):
-            if "npm_package_lock" not in javascript_options:
-                javascript_options.append("npm_package_lock")
-        elif isinstance(javascript_options, dict):
-            javascript_options.setdefault("npm_package_lock", True)
+            raw_value["javascript"] = {k: True for k in javascript_options}
+            javascript_options = raw_value["javascript"]
+        javascript_options.setdefault("npm_package_lock", False)
 
         # Add rules to .gitignore
         array_dict_get_by("name", ".gitignore", children).setdefault(
