@@ -32,6 +32,22 @@ class JavascriptWorkdir(CodeBaseWorkdir):
     def get_dependencies_versions(self) -> dict[str, str]:
         return self.get_app_config_file().get_dependencies_versions()
 
+    def update_dependencies(self, dependencies_map: dict[str, str]) -> None:
+        import re
+
+        config_file = self.get_app_config_file()
+        current_deps = config_file.get_dependencies_versions()
+
+        for name, new_version in dependencies_map.items():
+            if name not in current_deps:
+                continue
+            current = current_deps[name]
+            match = re.match(r"^([><=!~^]+)", current)
+            operator = match.group(1) if match else "^"
+            config_file.add_dependency_from_string(
+                package_name=name, version=new_version, operator=operator
+            )
+
     def get_main_code_file_extension(self) -> str:
         return "js"
 
