@@ -32,12 +32,6 @@ class JavascriptWorkdir(CodeBaseWorkdir):
     def get_dependencies_versions(self) -> dict[str, str]:
         return self.get_app_config_file().get_dependencies_versions()
 
-    def _canonicalize_dep_name(self, name: str) -> str:
-        return name
-
-    def _default_dependency_operator(self) -> str:
-        return "^"
-
     def get_main_code_file_extension(self) -> str:
         return "js"
 
@@ -131,6 +125,9 @@ class JavascriptWorkdir(CodeBaseWorkdir):
 
         return raw_value
 
+    def _canonicalize_dep_name(self, name: str) -> str:
+        return name
+
     def _create_javascript_file_children_filter(self) -> ChildrenFileFactoryOption:
         from wexample_filestate.const.disk import DiskItemType
         from wexample_filestate.option.children_filter_option import (
@@ -151,3 +148,6 @@ class JavascriptWorkdir(CodeBaseWorkdir):
             name_pattern=r"^.*\.(js|jsx|ts|tsx)$",
             recursive=True,
         )
+
+    def _default_dependency_operator(self) -> str:
+        return "^"
