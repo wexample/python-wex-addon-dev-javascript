@@ -66,12 +66,11 @@ class JavascriptWorkdir(CodeBaseWorkdir):
         # Ensure a package.json file exists for any JavaScript package project
         children = raw_value["children"]
 
-        javascript_options = raw_value.setdefault("javascript", [])
+        javascript_options = raw_value.setdefault("javascript", {})
         if isinstance(javascript_options, list):
-            if "npm_package_lock" not in javascript_options:
-                javascript_options.append("npm_package_lock")
-        elif isinstance(javascript_options, dict):
-            javascript_options.setdefault("npm_package_lock", True)
+            raw_value["javascript"] = {k: True for k in javascript_options}
+            javascript_options = raw_value["javascript"]
+        javascript_options.setdefault("npm_package_lock", False)
 
         # Add rules to .gitignore
         array_dict_get_by("name", ".gitignore", children).setdefault(
@@ -126,6 +125,9 @@ class JavascriptWorkdir(CodeBaseWorkdir):
 
         return raw_value
 
+    def _canonicalize_dep_name(self, name: str) -> str:
+        return name
+
     def _create_javascript_file_children_filter(self) -> ChildrenFileFactoryOption:
         from wexample_filestate.const.disk import DiskItemType
         from wexample_filestate.option.children_filter_option import (
@@ -146,3 +148,6 @@ class JavascriptWorkdir(CodeBaseWorkdir):
             name_pattern=r"^.*\.(js|jsx|ts|tsx)$",
             recursive=True,
         )
+
+    def _default_dependency_operator(self) -> str:
+        return "^"
