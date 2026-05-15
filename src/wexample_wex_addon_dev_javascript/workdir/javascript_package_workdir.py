@@ -142,7 +142,7 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
             self.log("No deployment remote configured, skipping publication.")
             return
 
-        tag = f"v{self.get_project_version()}"
+        tag = f"v{self.get_setup_version()}"
         cwd = self.get_path()
 
         if git_tag_exists(tag, cwd=cwd, inherit_stdio=False):
@@ -165,7 +165,7 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         import urllib.request
 
         package = self.get_project_name()
-        version = self.get_project_version()
+        version = self.get_setup_version()
 
         registry_base = (
             self.get_runtime_config().search("npm.registry_url").get_str_or_none()

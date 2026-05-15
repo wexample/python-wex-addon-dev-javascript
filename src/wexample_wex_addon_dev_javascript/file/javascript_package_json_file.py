@@ -61,7 +61,7 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
 
         workdir = self.get_parent_item()
         content["name"] = workdir.get_project_name()
-        content["version"] = workdir.get_project_version()
+        content["version"] = workdir.get_setup_version()
 
         remote_url = workdir.get_public_remote_repository_url()
         if remote_url:
