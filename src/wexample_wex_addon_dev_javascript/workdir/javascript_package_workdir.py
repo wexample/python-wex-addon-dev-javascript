@@ -160,9 +160,12 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         per-version URLs.
         """
         import json
-        import time
         import urllib.error
         import urllib.request
+
+        from wexample_helpers.helpers.polling_callback_manager import (
+            PollingCallbackManager,
+        )
 
         package = self.get_project_name()
         version = self.get_setup_version()
@@ -173,15 +176,9 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         token = self.get_runtime_config().search("npm.api_token").get_str_or_none()
 
         encoded = package.replace("/", "%2F")
-        base = (registry_base or "https://registry.npmjs.org").rstrip("/")
-        url = f"{base}/{encoded}"
+        url = f"{(registry_base or 'https://registry.npmjs.org').rstrip('/')}/{encoded}"
 
-        max_attempts = 40
-        delay = 30.0
-
-        self.log(f"Waiting for {package}@{version} to appear on registry…")
-
-        for attempt in range(1, max_attempts + 1):
+        def check_available() -> bool | None:
             try:
                 req = urllib.request.Request(url)
                 if token:
@@ -190,21 +187,33 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
                     if resp.status == 200:
                         data = json.loads(resp.read())
                         if version in data.get("versions", {}):
-                            self.success(f"{package}@{version} is available.")
-                            return
+                            return True
             except urllib.error.HTTPError as e:
                 if e.code != 404:
                     raise
             except Exception:
                 pass
+            return None
 
+        max_attempts = 40
+        delay_seconds = 30
+
+        self.log(f"Waiting for {package}@{version} to appear on registry…")
+
+        def on_retry(attempt, max_a, delay, _exc, _msg) -> None:
             self.log(
-                f"Not yet available (attempt {attempt}/{max_attempts}), "
-                f"retrying in {int(delay)}s…"
+                f"Not yet available (attempt {attempt}/{max_a}), retrying in {delay}s…"
             )
-            time.sleep(delay)
 
-        raise RuntimeError(
-            f"Timed out waiting for {package}@{version} on registry after "
-            f"{max_attempts * int(delay) // 60} minutes."
-        )
+        PollingCallbackManager(
+            callback=check_available,
+            max_attempts=max_attempts,
+            delay_seconds_callback=lambda _attempt: delay_seconds,
+            on_retry_callback=on_retry,
+            timeout_message=(
+                f"Timed out waiting for {package}@{version} on registry after "
+                f"{max_attempts * delay_seconds // 60} minutes."
+            ),
+        ).run()
+
+        self.success(f"{package}@{version} is available.")
