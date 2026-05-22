@@ -1,6 +1,6 @@
 # wex_addon_dev_javascript
 
-Version: 7.7.2
+Version: 7.8.0
 
 Python dev addon for wex
 
