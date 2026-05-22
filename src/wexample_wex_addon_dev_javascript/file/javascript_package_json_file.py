@@ -75,8 +75,10 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
         self, optional: bool = False, group: str = "dev"
     ) -> dict[str, str]:
         config = self.read_config()
-        deps = config.search(path="dependencies").get_dict_or_default(default={})
-        peer = config.search(path="peerDependencies").get_dict_or_default(default={})
+        # Use to_dict_or_none() (not get_dict_or_default) so nested ConfigValue
+        # wrappers are unwrapped to native str — matches the dict[str, str] signature.
+        deps = config.search(path="dependencies").to_dict_or_none() or {}
+        peer = config.search(path="peerDependencies").to_dict_or_none() or {}
         return {**deps, **peer}
 
     def _apply_default_publish_config(self, content: dict) -> None:
