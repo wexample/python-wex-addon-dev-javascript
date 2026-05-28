@@ -6,10 +6,8 @@ services:
     command: tail -f /dev/null
     volumes:
       - ${APP_PATH}:/var/www/html
-      - node_modules:/var/www/html/node_modules
+      - ${APP_PATH}/node_modules:/var/www/html/node_modules
     extends:
       file: ${SERVICE_DEFAULT_COMPOSE}
       service: default
 
-volumes:
-  node_modules:
