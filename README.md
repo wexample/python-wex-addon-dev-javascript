@@ -1,6 +1,6 @@
 # wex_addon_dev_javascript
 
-Version: 7.10.7
+Version: 7.10.8
 
 Python dev addon for wex
 
@@ -83,7 +83,7 @@ Visit the [Wexample Suite documentation](https://docs.wexample.com) for the comp
 - attrs: >=23.1.0
 - cattrs: >=23.1.0
 - wexample-filestate-javascript: >=6.3.0
-- wexample-wex-addon-app: >=20.9.0
+- wexample-wex-addon-app: >=20.10.0
 
 ## Versioning & Compatibility Policy
 
