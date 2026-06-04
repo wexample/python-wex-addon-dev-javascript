@@ -157,16 +157,16 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
     def _wait_for_registry(self) -> None:
         """Poll the configured npm registry until the current version is available (max 20 min).
 
-        Fetches the package manifest and checks for the version in 'versions' — compatible
-        with both public npm and private registries (e.g. GitLab) that don't expose
-        per-version URLs.
+        Works for both public npm and private registries (e.g. GitLab) that
+        don't expose per-version URLs — relies on the package manifest's
+        `versions` map.
         """
-        import json
-        import urllib.error
-        import urllib.request
-
         from wexample_helpers.helpers.polling_callback_manager import (
             PollingCallbackManager,
+        )
+
+        from wexample_wex_addon_dev_javascript.common.npm_registry_gateway import (
+            NpmRegistryGateway,
         )
 
         package = self.get_project_name()
@@ -174,28 +174,16 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
 
         registry_base = (
             self.get_runtime_config().search("npm.registry_url").get_str_or_none()
+            or "https://registry.npmjs.org"
         )
         token = self.get_runtime_config().search("npm.api_token").get_str_or_none()
 
-        encoded = package.replace("/", "%2F")
-        url = f"{(registry_base or 'https://registry.npmjs.org').rstrip('/')}/{encoded}"
-
-        def check_available() -> bool | None:
-            try:
-                req = urllib.request.Request(url)
-                if token:
-                    req.add_header("Authorization", f"Bearer {token}")
-                with urllib.request.urlopen(req, timeout=10) as resp:
-                    if resp.status == 200:
-                        data = json.loads(resp.read())
-                        if version in data.get("versions", {}):
-                            return True
-            except urllib.error.HTTPError as e:
-                if e.code != 404:
-                    raise
-            except Exception:
-                pass
-            return None
+        gateway = NpmRegistryGateway(
+            base_url=registry_base,
+            token=token,
+            io=self.io,
+            timeout=10,
+        )
 
         max_attempts = 40
         delay_seconds = 30
@@ -208,7 +196,7 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
             )
 
         PollingCallbackManager(
-            callback=check_available,
+            callback=lambda: True if gateway.has_version(package, version) else None,
             max_attempts=max_attempts,
             delay_seconds_callback=lambda _attempt: delay_seconds,
             on_retry_callback=on_retry,
