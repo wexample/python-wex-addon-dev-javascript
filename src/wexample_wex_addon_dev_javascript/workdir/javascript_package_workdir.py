@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from wexample_helpers.decorator.base_class import base_class
 from wexample_helpers.helpers.string import string_to_kebab_case
 from wexample_helpers_git.helpers.git import (
     git_tag_annotated,
@@ -22,6 +23,7 @@ if TYPE_CHECKING:
     )
 
 
+@base_class
 class JavascriptPackageWorkdir(JavascriptWorkdir):
     def get_package_dependency_name(self) -> str:
         return self.get_package_import_name()
