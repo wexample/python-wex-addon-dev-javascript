@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     )
 
 
-class JavascriptWorkdir(WithAiWorkdirMixin, CodeBaseWorkdir):
+class JavascriptWorkdir(CodeBaseWorkdir, WithAiWorkdirMixin):
     def get_app_config_file(self, reload: bool = True) -> JavascriptPackageJsonFile:
         from wexample_wex_addon_dev_javascript.file.javascript_package_json_file import (
             JavascriptPackageJsonFile,
