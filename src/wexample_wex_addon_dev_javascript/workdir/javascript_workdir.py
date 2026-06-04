@@ -5,6 +5,9 @@ from typing import TYPE_CHECKING
 from wexample_config.options_provider.abstract_options_provider import (
     AbstractOptionsProvider,
 )
+from wexample_wex_addon_ai.workdir.mixin.with_ai_workdir_mixin import (
+    WithAiWorkdirMixin,
+)
 from wexample_wex_addon_app.workdir.code_base_workdir import CodeBaseWorkdir
 
 if TYPE_CHECKING:
@@ -18,7 +21,7 @@ if TYPE_CHECKING:
     )
 
 
-class JavascriptWorkdir(CodeBaseWorkdir):
+class JavascriptWorkdir(WithAiWorkdirMixin, CodeBaseWorkdir):
     def get_app_config_file(self, reload: bool = True) -> JavascriptPackageJsonFile:
         from wexample_wex_addon_dev_javascript.file.javascript_package_json_file import (
             JavascriptPackageJsonFile,
@@ -62,6 +65,8 @@ class JavascriptWorkdir(CodeBaseWorkdir):
         )
 
         raw_value = super().prepare_value(raw_value=raw_value)
+
+        self.append_agents(config=raw_value)
 
         # Ensure a package.json file exists for any JavaScript package project
         children = raw_value["children"]
