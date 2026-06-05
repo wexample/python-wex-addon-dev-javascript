@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from wexample_cli.decorator.command import command
+from wexample_cli.const.tags import AudienceTag, EffectTag, ScopeTag
+from wexample_wex_addon_dev_javascript.const.tags import DomainTag
 from wexample_wex_core.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
@@ -13,6 +15,15 @@ if TYPE_CHECKING:
 @command(
     type=COMMAND_TYPE_SERVICE,
     description="Patch vite.config.ts to allow all hosts (needed behind a reverse proxy)",
+    tags=[
+        DomainTag.DEV_SERVER,
+        DomainTag.FRONTEND,
+        DomainTag.SERVICE,
+        EffectTag.WRITE,
+        AudienceTag.AGENT_SAFE,
+        ScopeTag.APP,
+        ScopeTag.LOCAL,
+    ],
 )
 def vite__service__install(
     context: ExecutionContext,

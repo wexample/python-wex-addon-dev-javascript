@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from wexample_cli.decorator.command import command
+from wexample_cli.const.tags import AudienceTag, EffectTag, ScopeTag
+from wexample_wex_addon_dev_javascript.const.tags import DomainTag
 from wexample_wex_core.const.globals import COMMAND_TYPE_SERVICE
 
 if TYPE_CHECKING:
@@ -12,7 +14,19 @@ if TYPE_CHECKING:
 
 
 @command(
-    type=COMMAND_TYPE_SERVICE, description="Check if the Vite dev server is responding"
+    type=COMMAND_TYPE_SERVICE, description="Check if the Vite dev server is responding",
+    tags=[
+        DomainTag.DEV_SERVER,
+        DomainTag.FRONTEND,
+        DomainTag.SERVICE,
+        EffectTag.IDEMPOTENT,
+        EffectTag.NETWORK_CALL,
+        EffectTag.READ_ONLY,
+        EffectTag.SUBPROCESS_SPAWN,
+        AudienceTag.AGENT_SAFE,
+        ScopeTag.APP,
+        ScopeTag.LOCAL,
+    ],
 )
 def vite__service__ready(
     context: ExecutionContext,
