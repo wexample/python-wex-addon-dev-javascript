@@ -5,6 +5,4 @@ tracking:
     - status:in-progress
 tools:
   tags:
-    - domain:dev-server
-    - domain:frontend
-    - domain:service
+    - service:vite
