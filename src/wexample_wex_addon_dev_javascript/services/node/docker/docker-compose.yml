@@ -1,5 +1,6 @@
 services:
   node:
+    restart: unless-stopped
     container_name: ${APP_PROJECT_NAME}_node
     image: node:20-alpine
     working_dir: /var/www/html

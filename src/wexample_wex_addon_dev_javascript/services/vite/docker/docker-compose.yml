@@ -1,6 +1,7 @@
 services:
 
   vite:
+    restart: unless-stopped
     container_name: ${APP_PROJECT_NAME}_vite
     image: oven/bun:latest
     working_dir: /app
