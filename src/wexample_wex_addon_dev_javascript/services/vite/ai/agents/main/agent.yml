@@ -1,0 +1,10 @@
+description: Vite dev server assistant — install, start, stop, and troubleshoot the containerized Vite dev server (allowedHosts patching, port conflicts, readiness checks).
+tracking:
+  labels:
+    - status:queued
+    - status:in-progress
+tools:
+  tags:
+    - domain:dev-server
+    - domain:frontend
+    - domain:service
