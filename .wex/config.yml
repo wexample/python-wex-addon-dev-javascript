@@ -4,7 +4,7 @@ domains: []
 global:
   name: wex_addon_dev_javascript
   type: app
-  version: 7.12.3
+  version: 7.12.4
 wex:
   migration: 1
   version: 6.0.112
