@@ -57,7 +57,6 @@ class JavascriptWorkdir(WithAiWorkdirMixin, CodeBaseWorkdir):
 
     def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
         from wexample_filestate.const.disk import DiskItemType
-        from wexample_helpers.helpers.array import array_dict_get_by
 
         from wexample_wex_addon_dev_javascript.file.javascript_package_json_file import (
             JavascriptPackageJsonFile,
@@ -79,17 +78,14 @@ class JavascriptWorkdir(WithAiWorkdirMixin, CodeBaseWorkdir):
             javascript_options = raw_value["javascript"]
         javascript_options.setdefault("npm_package_lock", False)
 
-        # Add rules to .gitignore
-        array_dict_get_by("name", ".gitignore", children).setdefault(
-            "should_contain_lines", []
-        ).extend(
-            [
-                "node_modules/",
-                "dist/",
-                "build/",
-                ".npm",
-                ".eslintcache",
-            ]
+        self.add_gitignore_rules(
+            children,
+            "node_modules/",
+            "dist/",
+            "build/",
+            ".npm",
+            ".eslintcache",
+            section="JavaScript",
         )
 
         children.extend(
