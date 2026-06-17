@@ -47,11 +47,7 @@ class JavascriptWorkdir(WithAiWorkdirMixin, CodeBaseWorkdir):
 
         options = super().get_options_providers()
 
-        options.extend(
-            [
-                JavascriptOptionsProvider,
-            ]
-        )
+        options.append(JavascriptOptionsProvider)
 
         return options
 

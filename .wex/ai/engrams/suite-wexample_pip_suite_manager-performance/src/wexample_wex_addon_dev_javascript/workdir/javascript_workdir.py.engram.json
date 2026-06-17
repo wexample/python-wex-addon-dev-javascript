@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": "src/wexample_wex_addon_dev_javascript/workdir/javascript_workdir.py",
+  "cache_nonce": "1c2800147ebc4367950bb7b61bd21d00",
+  "last_visited_at": "2026-06-17T06:00:18+00:00",
+  "last_rev": "db23505d34d53ccae15d43905bfea0452aca5bf2",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "replace extend([single_item]) with append in get_options_providers to avoid temporary list allocation",
+  "in_progress": null
+}
