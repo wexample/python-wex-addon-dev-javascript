@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": "src/wexample_wex_addon_dev_javascript/config_value/javascript_package_readme_config_value.py",
+  "cache_nonce": "1c2800147ebc4367950bb7b61bd21d00",
+  "last_visited_at": "2026-06-17T05:54:37+00:00",
+  "last_rev": "708b0145b2b9a67d2983f86465c9499b3c69d12d",
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "single one-liner method, no loops or repeated lookups — no intra-method optimizations possible",
+  "in_progress": null
+}
