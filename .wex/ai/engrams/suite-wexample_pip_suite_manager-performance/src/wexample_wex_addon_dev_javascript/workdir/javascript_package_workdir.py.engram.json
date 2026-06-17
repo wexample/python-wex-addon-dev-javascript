@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": "src/wexample_wex_addon_dev_javascript/workdir/javascript_package_workdir.py",
+  "cache_nonce": "1c2800147ebc4367950bb7b61bd21d00",
+  "last_visited_at": "2026-06-17T05:59:27+00:00",
+  "last_rev": "cea0f254e703f11e61e53eaca2f40b66b0deee76",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "replace extend([item]) with append(item); replace ts_files list-comp with any()-generator using endswith(tuple)",
+  "in_progress": null
+}

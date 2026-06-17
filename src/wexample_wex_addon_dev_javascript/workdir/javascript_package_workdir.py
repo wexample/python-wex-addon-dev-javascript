@@ -45,35 +45,33 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         raw_value = super().prepare_value(raw_value=raw_value)
         children = raw_value["children"]
 
-        children.extend(
-            [
-                {
-                    "name": ".github",
-                    "type": DiskItemType.DIRECTORY,
-                    "should_exist": True,
-                    "children": [
-                        {
-                            "name": "workflows",
-                            "type": DiskItemType.DIRECTORY,
-                            "should_exist": True,
-                            "children": [
-                                {
-                                    "name": "publish.yml",
-                                    "type": DiskItemType.FILE,
-                                    "should_exist": True,
-                                    "content": file_read(
-                                        module_get_path(
-                                            wexample_wex_addon_dev_javascript
-                                        )
-                                        / "resources"
-                                        / "package_publish.yml"
-                                    ),
-                                }
-                            ],
-                        }
-                    ],
-                }
-            ]
+        children.append(
+            {
+                "name": ".github",
+                "type": DiskItemType.DIRECTORY,
+                "should_exist": True,
+                "children": [
+                    {
+                        "name": "workflows",
+                        "type": DiskItemType.DIRECTORY,
+                        "should_exist": True,
+                        "children": [
+                            {
+                                "name": "publish.yml",
+                                "type": DiskItemType.FILE,
+                                "should_exist": True,
+                                "content": file_read(
+                                    module_get_path(
+                                        wexample_wex_addon_dev_javascript
+                                    )
+                                    / "resources"
+                                    / "package_publish.yml"
+                                ),
+                            }
+                        ],
+                    }
+                ],
+            }
         )
 
         return raw_value
@@ -107,12 +105,7 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
             check=False,
             capture=True,
         )
-        ts_files = [
-            f
-            for f in changed_files.stdout.splitlines()
-            if f.endswith(".ts") or f.endswith(".tsx")
-        ]
-        if not ts_files:
+        if not any(f.endswith((".ts", ".tsx")) for f in changed_files.stdout.splitlines()):
             self.log("Only non-TypeScript files changed in src/, treating as minor.")
             return UPGRADE_TYPE_INTERMEDIATE
 
