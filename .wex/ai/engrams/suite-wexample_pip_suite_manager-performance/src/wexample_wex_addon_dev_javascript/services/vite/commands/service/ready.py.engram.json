@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": "src/wexample_wex_addon_dev_javascript/services/vite/commands/service/ready.py",
+  "cache_nonce": "1c2800147ebc4367950bb7b61bd21d00",
+  "last_visited_at": "2026-06-17T05:58:26+00:00",
+  "last_rev": "a5d41a1046d9b34bd4e0c3e8bf38f0d18564e540",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "replaced chained .get({}) port lookup with try/except to eliminate two intermediate empty-dict allocations on cold path and use faster subscript access on hot path",
+  "in_progress": null
+}

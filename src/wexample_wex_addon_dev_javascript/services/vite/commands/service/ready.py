@@ -41,7 +41,10 @@ def vite__service__ready(
     runtime = service.app_workdir.get_runtime_config()
     app_project_name = runtime.search("app.project_name").get_str()
     container_name = f"{app_project_name}_vite"
-    port = service.manifest.get("vars", {}).get("VITE_PORT", {}).get("default", "8080")
+    try:
+        port = service.manifest["vars"]["VITE_PORT"]["default"]
+    except (KeyError, TypeError):
+        port = "8080"
 
     result = subprocess.run(
         [
