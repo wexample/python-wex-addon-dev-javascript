@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": "src/wexample_wex_addon_dev_javascript/services/vite/commands/service/install.py",
+  "cache_nonce": "1c2800147ebc4367950bb7b61bd21d00",
+  "last_visited_at": "2026-06-17T05:57:20+00:00",
+  "last_rev": "0cbd68b7f9e315b71757f2a1ab6fdab876e349f0",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "hoisted `import re` and pre-compiled regex pattern out of function body to module level",
+  "in_progress": null
+}

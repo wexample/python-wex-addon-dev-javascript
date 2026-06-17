@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING
 
 from wexample_cli.const.tags import AudienceTag, EffectTag, ScopeTag
@@ -7,6 +8,8 @@ from wexample_cli.decorator.command import command
 from wexample_wex_core.const.globals import COMMAND_TYPE_SERVICE
 
 from wexample_wex_addon_dev_javascript.const.tags import DomainTag
+
+_DEFINE_CONFIG_RE = re.compile(r"(defineConfig\(\s*\{)")
 
 if TYPE_CHECKING:
     from wexample_cli.context.execution_context import ExecutionContext
@@ -30,8 +33,6 @@ def vite__service__install(
     context: ExecutionContext,
     service: AppService,
 ) -> None:
-    import re
-
     app_path = service.app_workdir.get_path()
 
     for config_name in ["vite.config.ts", "vite.config.js"]:
@@ -52,9 +53,8 @@ def vite__service__install(
                 "defineConfig()",
                 "defineConfig({ vite: { server: { allowedHosts: true } } })",
             )
-        elif re.search(r"defineConfig\(\s*\{", content):
-            content = re.sub(
-                r"(defineConfig\(\s*\{)",
+        elif _DEFINE_CONFIG_RE.search(content):
+            content = _DEFINE_CONFIG_RE.sub(
                 r"\1 vite: { server: { allowedHosts: true } },",
                 content,
                 count=1,
