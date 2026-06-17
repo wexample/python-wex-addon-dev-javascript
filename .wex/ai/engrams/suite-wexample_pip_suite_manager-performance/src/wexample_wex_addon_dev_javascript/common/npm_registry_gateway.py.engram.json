@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": "src/wexample_wex_addon_dev_javascript/common/npm_registry_gateway.py",
+  "cache_nonce": "1c2800147ebc4367950bb7b61bd21d00",
+  "last_visited_at": "2026-06-17T05:54:09+00:00",
+  "last_rev": "8e63e72fb41c9949c0f1a140bd1668ef0f8c85bc",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "replaced `get(\"versions\") or {}` with `get(\"versions\", {})` to skip boolean evaluation overhead",
+  "in_progress": null
+}

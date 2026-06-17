@@ -41,4 +41,4 @@ class NpmRegistryGateway(AbstractGateway):
         )
         if response is None or response.status_code != 200:
             return False
-        return version in (response.json().get("versions") or {})
+        return version in response.json().get("versions", {})
