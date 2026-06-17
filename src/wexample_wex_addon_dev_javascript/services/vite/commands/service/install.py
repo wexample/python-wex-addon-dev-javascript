@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from wexample_wex_addon_app.service.app_service import AppService
 
 _DEFINE_CONFIG_RE = re.compile(r"(defineConfig\(\s*\{)")
+_VITE_CONFIG_NAMES = ("vite.config.ts", "vite.config.js")
 
 
 @command(
@@ -35,7 +36,7 @@ def vite__service__install(
 ) -> None:
     app_path = service.app_workdir.get_path()
 
-    for config_name in ["vite.config.ts", "vite.config.js"]:
+    for config_name in _VITE_CONFIG_NAMES:
         config_path = app_path / config_name
         if not config_path.exists():
             continue
@@ -53,15 +54,16 @@ def vite__service__install(
                 "defineConfig()",
                 "defineConfig({ vite: { server: { allowedHosts: true } } })",
             )
-        elif _DEFINE_CONFIG_RE.search(content):
-            content = _DEFINE_CONFIG_RE.sub(
+        else:
+            new_content, n = _DEFINE_CONFIG_RE.subn(
                 r"\1 vite: { server: { allowedHosts: true } },",
                 content,
                 count=1,
             )
-        else:
-            context.io.log(f"  {config_name}: unrecognized format, skipping")
-            return
+            if not n:
+                context.io.log(f"  {config_name}: unrecognized format, skipping")
+                return
+            content = new_content
 
         config_path.write_text(content)
         context.io.log(f"  ✓ {config_name}: allowedHosts patched")
