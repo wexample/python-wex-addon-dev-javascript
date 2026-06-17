@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": "src/wexample_wex_addon_dev_javascript/workdir/javascript_packages_suite_workdir.py",
+  "cache_nonce": "1c2800147ebc4367950bb7b61bd21d00",
+  "last_visited_at": "2026-06-17T05:59:49+00:00",
+  "last_rev": "e5a209076c11fd71c25f3fd60847f84066d41458",
+  "last_decision": "skip",
+  "kinds": [],
+  "notes": "thin adapter class — three trivial methods, no loops, no repeated lookups, short-circuit order already optimal",
+  "in_progress": null
+}
