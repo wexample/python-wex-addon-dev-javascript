@@ -10,7 +10,7 @@ class JavascriptTsconfigJsonFile(JsonFile):
         content = content or self.read_parsed()
 
         compiler_options = content.get("compilerOptions")
-        if compiler_options is None or not isinstance(compiler_options, dict):
+        if not isinstance(compiler_options, dict):
             compiler_options = {}
             content["compilerOptions"] = compiler_options
 

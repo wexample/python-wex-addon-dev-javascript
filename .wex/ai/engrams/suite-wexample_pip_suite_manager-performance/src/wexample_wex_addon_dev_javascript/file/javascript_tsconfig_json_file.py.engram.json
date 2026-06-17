@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": "src/wexample_wex_addon_dev_javascript/file/javascript_tsconfig_json_file.py",
+  "cache_nonce": "1c2800147ebc4367950bb7b61bd21d00",
+  "last_visited_at": "2026-06-17T05:56:32+00:00",
+  "last_rev": "37116d93aa3299959c62739b50cdedca4a08b9b2",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "removed redundant `is None` guard subsumed by `isinstance(…, dict)` check",
+  "in_progress": null
+}
