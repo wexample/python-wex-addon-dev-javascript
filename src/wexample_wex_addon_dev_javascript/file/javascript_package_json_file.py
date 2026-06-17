@@ -69,7 +69,7 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
 
         self._apply_default_publish_config(content)
 
-        return super().dumps(content or {})
+        return super().dumps(content)
 
     def get_dependencies_versions(
         self, optional: bool = False, group: str = "dev"
@@ -101,34 +101,29 @@ class JavascriptPackageJsonFile(AppDependenciesConfigFileMixin, JsonFile):
         # Default strategy: publish built artifacts (dist) so consumers don't need
         # to transpile TS/ESM sources from node_modules.
         if exports is None and (files is None or (uses_src and not uses_dist)):
-            content.setdefault("files", ["dist"])
-            content.setdefault(
-                "exports",
-                {
+            if "files" not in content:
+                content["files"] = ["dist"]
+            if "exports" not in content:
+                content["exports"] = {
                     "./*": {
                         "types": "./dist/*.d.ts",
                         "default": "./dist/*.js",
                     }
-                },
-            )
-            content.setdefault(
-                "typesVersions",
-                {
+                }
+            if "typesVersions" not in content:
+                content["typesVersions"] = {
                     "*": {
                         "*": ["dist/*"],
                     }
-                },
-            )
+                }
             return
 
         if uses_src and not uses_dist:
-            if files is None:
-                content.setdefault("files", ["src"])
-            content.setdefault(
-                "typesVersions",
-                {
+            if files is None and "files" not in content:
+                content["files"] = ["src"]
+            if "typesVersions" not in content:
+                content["typesVersions"] = {
                     "*": {
                         "*": ["src/*"],
                     }
-                },
-            )
+                }

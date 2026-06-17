@@ -1,0 +1,11 @@
+{
+  "engram_version": 1,
+  "source_key": "src/wexample_wex_addon_dev_javascript/file/javascript_package_json_file.py",
+  "cache_nonce": "1c2800147ebc4367950bb7b61bd21d00",
+  "last_visited_at": "2026-06-17T05:56:02+00:00",
+  "last_rev": "f32b1482ff58ee44bc7f2000237ce424f0792bf1",
+  "last_decision": "edit",
+  "kinds": [],
+  "notes": "removed redundant `or {}` in dumps and replaced eager-mutable setdefault calls with `if key not in content` guards in _apply_default_publish_config",
+  "in_progress": null
+}
