@@ -4,7 +4,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "wexample-wex-addon-dev-javascript"
-version = "7.14.0"
+version = "7.15.0"
 description = "Python dev addon for wex"
 authors = [{name = "weeger", email = "contact@wexample.com"}]
 requires-python = ">=3.10"
@@ -14,8 +14,8 @@ dependencies = [
     "cattrs>=23.1.0",
     "wexample-api>=6.6.0",
     "wexample-filestate-javascript>=6.5.0",
-    "wexample-wex-addon-ai>=11.2.0",
-    "wexample-wex-addon-app>=26.0.0",
+    "wexample-wex-addon-ai>=11.3.0",
+    "wexample-wex-addon-app>=26.1.0",
 ]
 
 [project.readme]
