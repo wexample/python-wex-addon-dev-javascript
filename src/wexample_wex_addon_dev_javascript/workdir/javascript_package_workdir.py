@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from wexample_helpers.decorator.base_class import base_class
 from wexample_helpers.helper.string import string_to_kebab_case
-from wexample_helpers_git.helpers.git import (
+from wexample_helpers_git.helper.git import (
     git_tag_annotated,
     git_tag_exists,
 )
@@ -82,7 +82,7 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
             UPGRADE_TYPE_MINOR,
         )
         from wexample_helpers.helper.shell import shell_run
-        from wexample_helpers_git.helpers.git import git_has_changes_since_tag
+        from wexample_helpers_git.helper.git import git_has_changes_since_tag
 
         if not git_has_changes_since_tag(last_tag, "src", cwd=self.get_path()):
             return UPGRADE_TYPE_MINOR
@@ -130,7 +130,7 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
 
     def _publish(self, force: bool = False) -> None:
         """Push a git tag to the deployment remote to trigger a CI/CD publication workflow."""
-        from wexample_helpers_git.helpers.git import git_push_tag
+        from wexample_helpers_git.helper.git import git_push_tag
 
         remote = self._get_deployment_remote_name()
         if not remote:
