@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from wexample_helpers.decorator.base_class import base_class
-from wexample_helpers.helpers.string import string_to_kebab_case
+from wexample_helpers.helper.string import string_to_kebab_case
 from wexample_helpers_git.helpers.git import (
     git_tag_annotated,
     git_tag_exists,
@@ -37,8 +37,8 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
 
     def prepare_value(self, raw_value: DictConfig | None = None) -> DictConfig:
         from wexample_filestate.const.disk import DiskItemType
-        from wexample_helpers.helpers.file import file_read
-        from wexample_helpers.helpers.module import module_get_path
+        from wexample_helpers.helper.file import file_read
+        from wexample_helpers.helper.module import module_get_path
 
         import wexample_wex_addon_dev_javascript
 
@@ -81,7 +81,7 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
             UPGRADE_TYPE_MAJOR,
             UPGRADE_TYPE_MINOR,
         )
-        from wexample_helpers.helpers.shell import shell_run
+        from wexample_helpers.helper.shell import shell_run
         from wexample_helpers_git.helpers.git import git_has_changes_since_tag
 
         if not git_has_changes_since_tag(last_tag, "src", cwd=self.get_path()):
