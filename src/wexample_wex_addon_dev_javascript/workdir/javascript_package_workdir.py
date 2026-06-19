@@ -154,7 +154,7 @@ class JavascriptPackageWorkdir(JavascriptWorkdir):
         don't expose per-version URLs — relies on the package manifest's
         `versions` map.
         """
-        from wexample_helpers.helpers.polling_callback_manager import (
+        from wexample_helpers.helper.polling_callback_manager import (
             PollingCallbackManager,
         )
 
